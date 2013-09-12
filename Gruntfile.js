@@ -61,6 +61,18 @@ module.exports = function(grunt) {
       }
     },
 
+    ejs: {
+      index: {
+        options: {
+          title: '<%= meta.title %>',
+          appBody: '<%= meta.src.html %>/main',
+        },
+        src: ['<%= meta.src.html %>/index.ejs'],
+        dest: '<%= meta.build.html %>/index.html',
+      },
+    },
+
+
     // Delivery
     chauffeur: {
       dev: {
@@ -74,14 +86,6 @@ module.exports = function(grunt) {
 
     // Utility
     copy: {
-      html: {
-        files: [{
-          expand: true,
-          cwd: '<%= meta.src.html %>/',
-          src: ['**/*.*'],
-          dest: '<%= meta.build.base %>/',
-        }]
-      },
       blocks: {
         files: [{
           expand: true,
@@ -127,6 +131,7 @@ module.exports = function(grunt) {
   // Build
   grunt.loadNpmTasks('grunt-browserify')
   grunt.loadNpmTasks('grunt-contrib-sass')
+  grunt.loadNpmTasks('grunt-ejs')
   // Delivery servers
   grunt.loadNpmTasks('grunt-chauffeur')
   // Utility
@@ -138,7 +143,8 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['run'])
   grunt.registerTask('run', ['build', 'servers','watch'])
 
-  grunt.registerTask('build', ['clean', 'copy:html', 'build:img', 'build:css', 'browserify'])
+  grunt.registerTask('build', ['clean', 'build:html', 'build:img', 'build:css', 'browserify'])
+  grunt.registerTask('build:html', ['ejs'])
   grunt.registerTask('build:img', ['copy:blocks','copy:avatars'])
   grunt.registerTask('build:css', ['sass:build'])
   

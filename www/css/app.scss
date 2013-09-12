@@ -1,0 +1,82 @@
+
+body {
+  font-family: Monospace;
+  font-size: 12px;
+  background-color: #f0f0f0;
+  margin: 0px;
+  overflow: hidden;
+}
+
+input, input:focus {
+  outline: none 
+}
+
+#container {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#crosshair {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin: -2px 0 0 -2px;
+  width: 4px;
+  height: 4px;
+  background-color: #d00;
+  opacity: 0.5;
+}
+
+#stats {
+  bottom: 0px;
+  right: 0px;
+}
+
+.logo {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+.bar-tab {
+  right: 33% !important;
+  left: 33% !important;
+}
+
+.errorMessage {
+  text-align: center;
+  width: 200px;
+  margin: 20px auto;
+}
+
+#chat {
+  padding: 10px;
+  height: 200px;
+  width: 25%;
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+
+  #messages {
+    max-height: 153px;
+    overflow: auto;
+  }
+
+  input {
+    box-shadow: none;
+    padding: 0px 10px;
+    margin: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+  }
+
+}
+
+#cmdbox {
+  position: absolute;
+  bottom: 0;
+}
+
+@import "ratchet"
