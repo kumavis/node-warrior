@@ -13,14 +13,20 @@ module.exports = function(grunt) {
         base: 'lib',
         www: 'www',
         js: '<%= meta.src.base %>',
-        img: '<%= meta.src.www %>/img',
+        img: {
+          base: '<%= meta.src.www %>/img',
+          textures: {
+            blocks: 'node_modules/painterly-textures/textures',
+            avatars: 'node_modules/voxel-client/www',
+          },
+        },
         css: '<%= meta.src.www %>/css',
         html: '<%= meta.src.www %>',
       },
 
       build: {
         base: '<%= meta.tmp %>/build',
-        img: '<%= meta.build.base %>/img',
+        img: '<%= meta.build.base %>/',
         html: '<%= meta.build.base %>',
         css: '<%= meta.build.base %>/css/app.css',
         js: '<%= meta.build.base %>/js/app.js',
@@ -29,11 +35,13 @@ module.exports = function(grunt) {
 
     // Build tasks
     browserify: {
+      options: {
+        debug: true,
+      },
       build: {
         files: {
           '<%= meta.build.js %>': ['index.js'],
         },
-        debug: true,
       },
     },
 
@@ -74,11 +82,19 @@ module.exports = function(grunt) {
           dest: '<%= meta.build.base %>/',
         }]
       },
-      img: {
+      blocks: {
         files: [{
           expand: true,
-          cwd: '<%= meta.src.img %>/',
-          src: ['**/*.*'],
+          cwd: '<%= meta.src.img.textures.blocks %>/',
+          src: ['**/*.png'],
+          dest: '<%= meta.build.img %>/textures',
+        }]
+      },
+      avatars: {
+        files: [{
+          expand: true,
+          cwd: '<%= meta.src.img.textures.avatars %>/',
+          src: ['**/*.png'],
           dest: '<%= meta.build.img %>/',
         }]
       },
@@ -122,7 +138,8 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['run'])
   grunt.registerTask('run', ['build', 'servers','watch'])
 
-  grunt.registerTask('build', ['clean', 'copy:html', 'copy:img', 'build:css', 'browserify'])
+  grunt.registerTask('build', ['clean', 'copy:html', 'build:img', 'build:css', 'browserify'])
+  grunt.registerTask('build:img', ['copy:blocks','copy:avatars'])
   grunt.registerTask('build:css', ['sass:build'])
   
   grunt.registerTask('servers', ['host','chauffeur:dev'])

@@ -18,7 +18,8 @@
   "dependencies": {
     "extend": "~1.2.0",
     "voxel-player": "~0.1.0",
-    "voxel-highlight": "0.0.9"
+    "voxel-highlight": "0.0.9",
+    "painterly-textures": "0.0.3"
   },
   "devDependencies": {
     "grunt-contrib-copy": "~0.4.1",
