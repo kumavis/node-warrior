@@ -1,9 +1,13 @@
 module.exports = function(grunt) {
   
   grunt.initConfig({
+
+    //
+    // App configurations
+    //
+
     pkg: grunt.file.readJSON('package.json'),
 
-    // App configurations
     meta: {
       title: 'Node Warrior',
       
@@ -33,7 +37,12 @@ module.exports = function(grunt) {
       }
     },
 
-    // Build tasks
+
+    //
+    // Build Tasks
+    //
+
+    // Javascript
     browserify: {
       options: {
         debug: true,
@@ -45,6 +54,7 @@ module.exports = function(grunt) {
       },
     },
 
+    // Css
     sass: {
       build: {
         options: {
@@ -61,6 +71,7 @@ module.exports = function(grunt) {
       }
     },
 
+    // Html
     ejs: {
       index: {
         options: {
@@ -73,7 +84,11 @@ module.exports = function(grunt) {
     },
 
 
-    // Delivery
+    //
+    // Servers
+    //
+
+    // launch the client server
     chauffeur: {
       dev: {
         port: 8002,
@@ -84,7 +99,11 @@ module.exports = function(grunt) {
       }
     },
 
+    //
     // Utility
+    //
+
+    // move files to build dir
     copy: {
       blocks: {
         files: [{
@@ -104,10 +123,7 @@ module.exports = function(grunt) {
       },
     },
 
-    clean: {
-      build: '<%= meta.tmp %>/*',
-    },
-
+    // trigger rebuild on file change
     watch: {
       app: {
         files: ['<%= meta.src.js %>/**/*.js'],
@@ -126,30 +142,50 @@ module.exports = function(grunt) {
       },
     },
 
+    // clean build dir
+    clean: {
+      build: '<%= meta.tmp %>/*',
+    },
+
   })
+
+  //
+  // Load Tasks
+  //
 
   // Build
   grunt.loadNpmTasks('grunt-browserify')
   grunt.loadNpmTasks('grunt-contrib-sass')
   grunt.loadNpmTasks('grunt-ejs')
-  // Delivery servers
+
+  // Servers
   grunt.loadNpmTasks('grunt-chauffeur')
+  
   // Utility
   grunt.loadNpmTasks('grunt-contrib-copy')
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-contrib-watch')
 
-  // Usable tasks from command line
-  grunt.registerTask('default', ['run'])
-  grunt.registerTask('run', ['build', 'servers','watch'])
+  //
+  // Define Tasks
+  //
 
+  // Default
+  grunt.registerTask('default', ['dev'])
+
+  // Dev
+  grunt.registerTask('dev', ['build', 'servers','watch'])
+
+  // Build
   grunt.registerTask('build', ['clean', 'build:html', 'build:img', 'build:css', 'browserify'])
   grunt.registerTask('build:html', ['ejs'])
   grunt.registerTask('build:img', ['copy:blocks','copy:avatars'])
   grunt.registerTask('build:css', ['sass:build'])
   
+  // Servers
   grunt.registerTask('servers', ['host','chauffeur:dev'])
   
+  // Utility
   grunt.registerTask('lock', ['chauffeur:dev:lock'])
   grunt.registerTask('unlock', ['chauffeur:dev:unlock'])
 
