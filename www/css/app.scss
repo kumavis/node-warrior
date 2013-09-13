@@ -1,3 +1,6 @@
+@import "ratchet";
+@import "codemirror";
+@import "mistakes";
 
 body {
   font-family: Monospace;
@@ -9,6 +12,10 @@ body {
 
 input, input:focus {
   outline: none 
+}
+
+.hidden {
+  display: none;
 }
 
 #container {
@@ -79,4 +86,29 @@ input, input:focus {
   bottom: 0;
 }
 
-@import "ratchet"
+#jseditor{
+  z-index: 11;
+  position: absolute;
+  // left: 60%;
+  width: 100%;
+  height: 100%;
+
+  .left, .right { height: 100%; overflow: visible; display: block; float: left; position: relative; width: 50%; }
+  .right { background: #eee; }
+
+  
+  .CodeMirror {
+    font-size: 20px;
+    background-color: rgba(255, 255, 255, 0.75);
+    .errorLine { background: rgba(255,0,0,0.25); }
+  }
+  
+  .CodeMirror-scroll { overflow: auto; }
+
+  @media all and (max-width: 800px) { .CodeMirror { font-size: 14px !important; } }
+
+}
+
+
+
+

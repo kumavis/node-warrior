@@ -19,7 +19,8 @@
     "extend": "~1.2.0",
     "voxel-player": "~0.1.0",
     "voxel-highlight": "0.0.9",
-    "painterly-textures": "0.0.3"
+    "painterly-textures": "0.0.3",
+    "javascript-editor": "git://github.com/kumavis/javascript-editor.git"
   },
   "devDependencies": {
     "grunt-contrib-copy": "~0.4.1",
