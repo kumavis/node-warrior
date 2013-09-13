@@ -131,7 +131,7 @@ module.exports = function(grunt) {
       },
       html: {
         files: ['<%= meta.src.html %>/**/*.ejs'],
-        tasks: ['lock', 'copy:index', 'unlock'],
+        tasks: ['lock', 'ejs:index', 'unlock'],
         options: {
           livereload: true
         },
