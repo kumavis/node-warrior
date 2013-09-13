@@ -127,18 +127,21 @@ module.exports = function(grunt) {
     watch: {
       app: {
         files: ['<%= meta.src.js %>/**/*.js'],
-        tasks: ['lock', 'browserify', 'unlock']
+        tasks: ['lock', 'browserify', 'unlock'],
       },
       html: {
-        files: ['<%= meta.src.html %>/index.html'],
-        tasks: ['lock', 'copy:index', 'unlock']
+        files: ['<%= meta.src.html %>/**/*.ejs'],
+        tasks: ['lock', 'copy:index', 'unlock'],
+        options: {
+          livereload: true
+        },
       },
       styles: {
         files: ['<%= meta.src.css %>/**/*.scss'],
         tasks: ['lock', 'sass:build', 'unlock'],
         options: {
           livereload: true
-        }
+        },
       },
     },
 
