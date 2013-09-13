@@ -20,6 +20,7 @@
     "voxel-player": "~0.1.0",
     "voxel-highlight": "0.0.9",
     "painterly-textures": "0.0.3",
+    "toolbar": "git://github.com/kumavis/toolbar.git",
     "javascript-editor": "git://github.com/kumavis/javascript-editor.git"
   },
   "devDependencies": {
