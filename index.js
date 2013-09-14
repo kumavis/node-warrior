@@ -1,3 +1,3 @@
 console.log('letsgo')
 
-require('./lib/client.js')({server: "ws://localhost:8080/"})
+require('./lib/client.js')({server: "ws://localhost:8000/"})
