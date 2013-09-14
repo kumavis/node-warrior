@@ -1,6 +1,0 @@
-[submodule "node_modules/voxel-client"]
-	path = node_modules/voxel-client
-	url = https://github.com/kumavis/node-warrior-client
-[submodule "node_modules/voxel-server"]
-	path = node_modules/voxel-server
-	url = https://github.com/kumavis/node-warrior-server
