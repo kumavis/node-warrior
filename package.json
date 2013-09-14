@@ -31,6 +31,7 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt": "~0.4.1",
     "grunt-browserify": "~1.2.4",
-    "grunt-ejs": "~0.1.0"
+    "grunt-ejs": "~0.1.0",
+    "brfs": "0.0.8"
   }
 }
