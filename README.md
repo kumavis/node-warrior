@@ -10,7 +10,7 @@ You can check this by going to your command line and typing `git -v` or `node -v
 ###[Git](http://git-scm.com/)
 ###[Node.js](http://nodejs.org/)
 
-    $ git clone --recursive https://github.com/kumavis/node-warrior
+    $ git clone --recursive https://github.com/kumavis/node-warrior.git
     $ npm install
 
 There are then two additional build steps.  Navigate to each of the node_modules `voxel-client` and `voxel-server` and `npm install` in each of them.
