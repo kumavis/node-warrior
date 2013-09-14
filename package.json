@@ -21,7 +21,9 @@
     "voxel-highlight": "0.0.9",
     "painterly-textures": "0.0.3",
     "toolbar": "git://github.com/kumavis/toolbar.git",
-    "javascript-editor": "git://github.com/kumavis/javascript-editor.git"
+    "javascript-editor": "git://github.com/kumavis/javascript-editor.git",
+    "voxel-server": "git://github.com/maxogden/voxel-server.git",
+    "voxel-client": "git://github.com/maxogden/voxel-client.git"
   },
   "devDependencies": {
     "grunt-contrib-copy": "~0.4.1",
