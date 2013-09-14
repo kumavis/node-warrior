@@ -7,16 +7,17 @@ Right now the server can only hold so much traffic, so you might want to run you
 
 You can check this by going to your command line and typing `git -v` or `node -v` to get the current versions you have installed.  If not, install from one of these links:
 
-Git
-Node.js
-    $ git clone --recursive https://github.com/kumavis/node-warrior
+###[Git](http://git-scm.com/)
+###[Node.js](http://nodejs.org/)
 
+    $ git clone --recursive https://github.com/kumavis/node-warrior
     $ npm install
 
 There are then two additional build steps.  Navigate to each of the node_modules `voxel-client` and `voxel-server` and `npm install` in each of them.
 
 Now, you should be able to run
-    $ grunt --force
+
+    $ grunt
 
 Grunt will now do some work for you and get the server running.
 
