@@ -177,8 +177,9 @@ module.exports = function(grunt) {
   // Default
   grunt.registerTask('default', ['dev'])
 
-  // Dev
+  // Build Modes
   grunt.registerTask('dev', ['build', 'servers','watch'])
+  grunt.registerTask('prod', ['build', 'servers','keepalive'])
 
   // Build
   grunt.registerTask('build', ['clean', 'build:html', 'build:img', 'build:css', 'browserify'])
@@ -202,7 +203,11 @@ module.exports = function(grunt) {
     grunt.log.write('Server Listening on ', serverPort)
   })
 
-
+  // Keep alive
+  grunt.registerTask('keepalive', function() {
+    grunt.log.write('Keeping Grunt task alive. (pid:'+process.pid+')')
+    this.async()
+  })
 
 }
 
