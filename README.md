@@ -2,6 +2,9 @@
 A 3D multiplayer voxel game with a code gun!
 It's a gun that shoots code you wrote into the world!
 
+## Demo
+Try it out [here](http://voxel.kumavis.me/)
+
 ## Dependencies
 First you'll need to make sure you have `git`, `node`, and `grunt` installed.
 You can check this by going to your command line and typing `git -v`, `node -v`, `grunt -V`.
