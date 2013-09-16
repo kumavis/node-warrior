@@ -213,8 +213,12 @@ module.exports = function(grunt) {
   })
 
   // Keep alive
+  var fs = require('fs');
   grunt.registerTask('keepalive', function() {
-    grunt.log.write('Keeping Grunt task alive. (pid:'+process.pid+')')
+    var pidfile = './grunt.pid'
+    fs.writeFileSync(pidfile,process.pid)
+    grunt.log.write('Keeping Grunt task alive.\n')
+    grunt.log.write('Grunt pid ('+process.pid+') recorded to \''+pidfile+'\'')
     this.async()
   })
 
