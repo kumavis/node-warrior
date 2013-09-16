@@ -19,9 +19,10 @@ module.exports = function(grunt) {
         js: '<%= meta.src.base %>',
         img: {
           base: '<%= meta.src.www %>/img',
+          icons: '<%= meta.src.img.base %>/icon',
           textures: {
             blocks: 'node_modules/painterly-textures/textures',
-            avatars: 'node_modules/voxel-client/www',
+            avatars: '<%= meta.src.img.base %>/avatar',
           },
         },
         css: '<%= meta.src.www %>/css',
@@ -110,7 +111,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: '<%= meta.src.img.textures.blocks %>/',
-          src: ['**/*.png'],
+          src: ['*.png'],
           dest: '<%= meta.build.img %>/textures',
         }]
       },
@@ -118,8 +119,16 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: '<%= meta.src.img.textures.avatars %>/',
-          src: ['**/*.png'],
+          src: ['*.png'],
           dest: '<%= meta.build.img %>/',
+        }]
+      },
+      icons: {
+        files: [{
+          expand: true,
+          cwd: '<%= meta.src.img.icons %>/',
+          src: ['*.gif'],
+          dest: '<%= meta.build.img %>/img',
         }]
       },
     },
@@ -184,7 +193,7 @@ module.exports = function(grunt) {
   // Build
   grunt.registerTask('build', ['clean', 'build:html', 'build:img', 'build:css', 'browserify'])
   grunt.registerTask('build:html', ['ejs'])
-  grunt.registerTask('build:img', ['copy:blocks','copy:avatars'])
+  grunt.registerTask('build:img', ['copy:icons','copy:blocks','copy:avatars'])
   grunt.registerTask('build:css', ['sass:build'])
   
   // Servers
