@@ -23,7 +23,8 @@
     "toolbar": "git://github.com/kumavis/toolbar.git",
     "javascript-editor": "git://github.com/kumavis/javascript-editor.git",
     "voxel-server": "git://github.com/maxogden/voxel-server.git",
-    "voxel-client": "git://github.com/maxogden/voxel-client.git"
+    "voxel-client": "git://github.com/maxogden/voxel-client.git",
+    "voxel-rescue": "0.0.2"
   },
   "devDependencies": {
     "grunt-contrib-copy": "~0.4.1",
