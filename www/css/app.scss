@@ -1,6 +1,6 @@
 @import "ratchet";
 @import "codemirror";
-@import "mistakes";
+@import "kumavis-monokai";
 
 body {
   font-family: Monospace;
@@ -46,59 +46,25 @@ input, input:focus {
   left: 5px;
 }
 
-.bar-tab {
-  right: 33% !important;
-  left: 33% !important;
-}
-
 .errorMessage {
   text-align: center;
   width: 200px;
   margin: 20px auto;
 }
 
-#chat {
-  padding: 10px;
-  height: 200px;
-  width: 25%;
-  position: absolute;
-  bottom: 50px;
-  left: 0;
-
-  #messages {
-    max-height: 153px;
-    overflow: auto;
-  }
-
-  input {
-    box-shadow: none;
-    padding: 0px 10px;
-    margin: 0;
-    background: none;
-    border: none;
-    border-radius: 0;
-  }
-
-}
-
-#cmdbox {
-  position: absolute;
-  bottom: 0;
-}
-
 #jseditor{
   position: absolute;
-  // left: 60%;
   width: 100%;
-  height: 100%;
+  bottom: 100px;
+  top: 0%;
+  border-bottom: solid 1px;
 
   .left, .right { height: 100%; overflow: visible; display: block; float: left; position: relative; width: 50%; }
   .right { background: #eee; }
 
-  
   .CodeMirror {
     font-size: 20px;
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: rgba(0, 0, 0, 0.45);
     .errorLine { background: rgba(255,0,0,0.25); }
   }
   
@@ -109,4 +75,39 @@ input, input:focus {
 }
 
 #blocks { bottom: 50px; }
+#tools { bottom: 0px; }
 
+#blocks, #tools {
+  left: 25%;
+}
+
+#chat {
+  background: rgba(0, 0, 0, 0.45);
+  position: absolute;
+  height: 100px;
+  width: 25%;
+  bottom: 0;
+
+  #messages {
+    color: magenta;
+    max-height: 80px;
+    overflow: auto;
+  }
+
+  #cmdbox {
+    position: absolute;
+    bottom: 0;
+    
+    input {
+      color: orange;
+      box-shadow: none;
+      height: 20px;
+      padding: 0;
+      margin: 0;
+      background: none;
+      border: none;
+      border-radius: 0;
+    }
+  }
+
+}
