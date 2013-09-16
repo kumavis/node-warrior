@@ -143,14 +143,14 @@ module.exports = function(grunt) {
         files: ['<%= meta.src.html %>/**/*.ejs'],
         tasks: ['lock', 'ejs:index', 'unlock'],
         options: {
-          livereload: true
+          livereload: false
         },
       },
       styles: {
         files: ['<%= meta.src.css %>/**/*.scss'],
         tasks: ['lock', 'sass:build', 'unlock'],
         options: {
-          livereload: true
+          livereload: false
         },
       },
     },
