@@ -51,7 +51,7 @@ module.exports = function(grunt) {
       },
       build: {
         files: {
-          '<%= meta.build.js %>': ['index.js'],
+          '<%= meta.build.js %>': ['./lib/launchClient.js'],
         },
       },
     },
@@ -206,7 +206,7 @@ module.exports = function(grunt) {
   // Launch voxel-server
   grunt.registerTask('host', function() {
     grunt.log.write('Starting host server.')
-    var server = require('voxel-server')(),
+    var server = require('./lib/launchServer.js')(),
         serverPort = 8000
     server.listen(serverPort)
     grunt.log.write('Server Listening on ', serverPort)
