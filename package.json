@@ -24,7 +24,7 @@
     "javascript-editor": "git://github.com/kumavis/javascript-editor.git",
     "voxel-server": "git://github.com/maxogden/voxel-server.git",
     "voxel-client": "git://github.com/maxogden/voxel-client.git",
-    "voxel-rescue": "git://github.com/monstercat/voxel-rescue.git"
+    "voxel-rescue": "git://github.com/flyswatter/voxel-rescue.git"
   },
   "devDependencies": {
     "grunt-contrib-copy": "~0.4.1",
