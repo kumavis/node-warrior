@@ -19,6 +19,7 @@
     "extend": "~1.2.0",
     "voxel-player": "~0.1.0",
     "voxel-highlight": "0.0.9",
+    "voxel-rescue": "git://github.com/flyswatter/voxel-rescue.git",
     "painterly-textures": "0.0.3",
     "toolbar": "git://github.com/kumavis/toolbar.git",
     "javascript-editor": "git://github.com/kumavis/javascript-editor.git",
