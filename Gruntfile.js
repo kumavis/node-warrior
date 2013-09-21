@@ -33,8 +33,8 @@ module.exports = function(grunt) {
         base: '<%= meta.tmp %>/build',
         img: '<%= meta.build.base %>/',
         html: '<%= meta.build.base %>',
-        css: '<%= meta.build.base %>/css/app.css',
-        js: '<%= meta.build.base %>/js/app.js',
+        css: '<%= meta.build.base %>/css/',
+        js: '<%= meta.build.base %>/js/',
       }
     },
 
@@ -51,7 +51,7 @@ module.exports = function(grunt) {
       },
       build: {
         files: {
-          '<%= meta.build.js %>': ['./lib/launchClient.js'],
+          '<%= meta.build.js %>/app.js': ['./lib/launchClient.js'],
         },
       },
     },
@@ -68,7 +68,7 @@ module.exports = function(grunt) {
           ]
         },
         files: {
-          '<%= meta.build.css %>': '<%= meta.src.css %>/app.scss'
+          '<%= meta.build.css %>/app.css': '<%= meta.src.css %>/app.scss'
         }
       }
     },
