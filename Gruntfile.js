@@ -17,6 +17,7 @@ module.exports = function(grunt) {
         base: 'lib',
         www: 'www',
         js: '<%= meta.src.base %>',
+        vendor: '<%= meta.src.base %>/vendor',
         img: {
           base: '<%= meta.src.www %>/img',
           icons: '<%= meta.src.img.base %>/icon',
@@ -107,6 +108,22 @@ module.exports = function(grunt) {
 
     // move files to build dir
     copy: {
+      pacejs: {
+        files: [{
+          expand: true,
+          cwd: '<%= meta.src.vendor %>/',
+          src: ['pace.js'],
+          dest: '<%= meta.build.js %>/',
+        }]
+      },
+      pacecss: {
+        files: [{
+          expand: true,
+          cwd: '<%= meta.src.css %>/',
+          src: ['pace.css'],
+          dest: '<%= meta.build.css %>/',
+        }]
+      },
       blocks: {
         files: [{
           expand: true,
@@ -147,7 +164,7 @@ module.exports = function(grunt) {
         },
       },
       styles: {
-        files: ['<%= meta.src.css %>/**/*.scss'],
+        files: ['<%= meta.src.css %>/**/*.scss','<%= meta.src.css %>/**/*.css'],
         tasks: ['lock', 'sass:build', 'unlock'],
         options: {
           livereload: true
@@ -191,10 +208,11 @@ module.exports = function(grunt) {
   grunt.registerTask('prod', ['build', 'servers','keepalive'])
 
   // Build
-  grunt.registerTask('build', ['clean', 'build:html', 'build:img', 'build:css', 'browserify'])
+  grunt.registerTask('build', ['clean', 'build:html', 'build:img', 'build:css', 'build:js'])
   grunt.registerTask('build:html', ['ejs'])
   grunt.registerTask('build:img', ['copy:icons','copy:blocks','copy:avatars'])
-  grunt.registerTask('build:css', ['sass:build'])
+  grunt.registerTask('build:css', ['copy:pacecss','sass:build'])
+  grunt.registerTask('build:js', ['copy:pacejs','browserify'])
   
   // Servers
   grunt.registerTask('servers', ['host','chauffeur:dev'])
