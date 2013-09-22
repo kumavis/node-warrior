@@ -25,7 +25,10 @@
     "javascript-editor": "git://github.com/kumavis/javascript-editor.git",
     "voxel-server": "git://github.com/kumavis/node-warrior-server.git",
     "voxel-client": "git://github.com/kumavis/node-warrior-client.git",
-    "voxel": "~0.3.1"
+    "voxel": "~0.3.1",
+    "level-sublevel": "~5.1.1",
+    "voxel-level": "~2.1.0",
+    "level": "~0.16.0"
   },
   "devDependencies": {
     "grunt-contrib-copy": "~0.4.1",
