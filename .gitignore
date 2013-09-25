@@ -1,5 +1,8 @@
 ### App ###
 
+# worlds
+world
+
 # build files
 tmp
 grunt.pid
