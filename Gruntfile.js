@@ -153,8 +153,13 @@ module.exports = function(grunt) {
     // trigger rebuild on file change
     watch: {
       app: {
-        files: ['<%= meta.src.js %>/**/*.js'],
+        files: ['<%= meta.src.js %>/**/*.js','!<%= meta.src.js %>/launchServer.js'],
         tasks: ['lock', 'browserify', 'unlock'],
+      },
+      // TODO: need to restart the server somehow
+      server: {
+        files: ['<%= meta.src.js %>/launchServer.js'],
+        tasks: ['lock', 'host', 'unlock'],
       },
       html: {
         files: ['<%= meta.src.html %>/**/*.ejs'],
