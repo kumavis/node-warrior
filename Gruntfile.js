@@ -185,7 +185,7 @@ module.exports = function(grunt) {
 
   // Build
   grunt.loadNpmTasks('grunt-browserify')
-  grunt.loadNpmTasks('grunt-contrib-sass')
+  grunt.loadNpmTasks('grunt-sass')
   grunt.loadNpmTasks('grunt-ejs')
 
   // Servers
