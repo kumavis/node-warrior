@@ -24,6 +24,7 @@ If you want to run your own for you and your friends:
 git clone https://github.com/kumavis/node-warrior.git
 cd node-warrior
 npm install
+cp -R example_world world/
 ```
 
 To launch the game server (port 8000) and web server (port 8002) run
@@ -38,3 +39,8 @@ Just go into your web browser and visit `http://localhost:8002/`.
 ## Controls
 
 * Press the `~` (tilde/backtick) key to toggle the code editor
+* Num keys select the different 'tools'
+* Materials can be selected using keys ` t y u i o p [ ] \ ` and ` g h j k l ; ' `
+* Click into the chat window (bottom left) to chat
+
+
