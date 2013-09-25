@@ -23,7 +23,7 @@
     "painterly-textures": "0.0.3",
     "toolbar": "git://github.com/kumavis/toolbar.git",
     "javascript-editor": "git://github.com/kumavis/javascript-editor.git",
-    "voxel-server": "git://github.com/kumavis/node-warrior-server.git#e66a85919e0996b4011a90bf084bc122a9b2d1b9",
+    "voxel-server": "git://github.com/kumavis/node-warrior-server.git#5b08fb29dad3bc86c791821e6dbe605cd312bcff",
     "voxel-client": "git://github.com/kumavis/node-warrior-client.git",
     "voxel": "~0.3.1",
     "level-sublevel": "~5.1.1",
