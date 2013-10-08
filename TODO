@@ -1,0 +1,56 @@
+TODO
+
+game dev env
+- error/output to console
+- code mirror auto complete?
+- allow modules, requirebin style
+
+bugs
+- fails to load inactive/distant areas
+
+server
+- extract voxel-level
+- move chunks in and out of memory as active/inactive
+
+client
+- hide and request chunks when far away
+
+
+FEATURE >> code blocks  <<
+
+basic
+  client
+  - ui for editing code cubes
+advanced
+  - sanitize/sanbox code from user (yikes)
+
+NOTES: ( CAFE VOXEL TIME )
+
+- simplify server:
+  - given a comm channel, communicate
+  - send chunks (initial and subsequent)
+  - broadcasting updates
+    - join/leave [lossless]
+    - voxel edits [lossless]
+    - player state (position, etc) [lossy ok]
+  - store world
+  - keep (active parts of) world in memory
+
+- simplify client:
+  - given a comm channel, communicate
+  - load chunks
+  - take in updates (voxel edits, player states)
+  - send updates (voxel edits, player states)
+
+- single / multiplayer agnostic
+  - single player is client connected to empty local server
+  - multi player is client connected to remote server
+  - or play multiplayer over webrtc with one person acting as the server
+
+- introduce git themes (pull requests, commits)
+  - fork a world to your own collection
+  - track edits by user as commits
+  - allow users to group a series of edits as commits
+  - make commits meaningful (cherry picking, copy paste, prs)
+
+

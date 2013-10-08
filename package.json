@@ -28,7 +28,12 @@
     "voxel": "~0.3.1",
     "level-sublevel": "~5.1.1",
     "voxel-level": "~2.1.0",
-    "level": "~0.16.0"
+    "level": "~0.16.0",
+    "duplex-emitter": "~0.1.9",
+    "websocket-stream": "0.0.5",
+    "ecstatic": "0.3.0",
+    "ws": "0.4.30",
+    "walkietalkie": "~1.0.0"
   },
   "devDependencies": {
     "grunt-contrib-copy": "~0.4.1",
