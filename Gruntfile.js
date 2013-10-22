@@ -188,13 +188,16 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-sass')
   grunt.loadNpmTasks('grunt-ejs')
 
-  // Servers
+  // Asset Server
   grunt.loadNpmTasks('grunt-chauffeur')
   
   // Utility
   grunt.loadNpmTasks('grunt-contrib-copy')
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-contrib-watch')
+
+  // Lib Tasks
+  grunt.loadTasks('./tasks')
 
   //
   // Define Tasks
@@ -222,48 +225,7 @@ module.exports = function(grunt) {
   grunt.registerTask('unlock', ['chauffeur:dev:unlock'])
 
   // Launch voxel-server
-  grunt.registerTask('host', function() {
-    var port = 8000
-
-    // dependencies
-    var http = require('http')
-    var path = require('path')
-    var ecstatic = require('ecstatic')
-    var WebSocketServer = require('ws').Server
-    var websocket = require('websocket-stream')
-    var duplexEmitter = require('duplex-emitter')
-    var Server = require('./lib/server.js')
-
-    // create server
-    var server = new Server({
-      worldId: 'kumavis',
-    })
-    // setup WebSocketServer
-    grunt.log.write('Starting host server.')
-    var httpServer = http.createServer(ecstatic(path.join(__dirname, 'www')))
-    var wss = new WebSocketServer({server: httpServer})
-    httpServer.listen(port)
-    wss.on('connection',function(ws) {
-      var stream = websocket(ws)
-      var connection = duplexEmitter(stream)
-      server.connectClient(connection)
-      // handle connection end/error
-      stream.once('end', function(){ server.removeClient(connection) })
-      stream.once('error', function(){ server.removeClient(connection) })
-    })
-    grunt.log.write('Server Listening on ', port)
-  })
-
-  // Keep alive
-  grunt.registerTask('keepalive', function() {
-    var fs = require('fs')
-
-    var pidfile = './grunt.pid'
-    fs.writeFileSync(pidfile,process.pid)
-    grunt.log.write('Keeping Grunt task alive.\n')
-    grunt.log.write('Grunt pid ('+process.pid+') recorded to \''+pidfile+'\'')
-    this.async()
-  })
+  grunt.registerTask('host', ['launchServer'])
 
 }
 
