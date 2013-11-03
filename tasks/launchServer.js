@@ -10,7 +10,7 @@ var sublevel = require('level-sublevel')
 // voxel dependencies
 var voxelLevel = require('voxel-level')
 // local dependencies
-var Server = require('../lib/server.js')
+var Server = require('../src/js/voxel/server.js')
 
 module.exports = function(grunt) {
 

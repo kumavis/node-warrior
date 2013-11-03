@@ -10,14 +10,23 @@ module.exports = function(grunt) {
 
     meta: {
       title: 'Node Warrior',
-      
+      environment: 'dev',
+
+      env: 'env/<%= meta.environment %>',
       tmp: 'tmp',
+
+      lib: {
+        base: 'lib',
+        js: '<%= meta.lib.base %>/js',
+        css: '<%= meta.lib.base %>/css',
+      },
   
       src: {
-        base: 'lib',
+        base: 'src',
         www: 'www',
-        js: '<%= meta.src.base %>',
-        vendor: '<%= meta.src.base %>/vendor',
+        js: '<%= meta.src.base %>/js',
+        css: '<%= meta.src.www %>/css',
+        templates: '<%= meta.src.base %>/templates',
         img: {
           base: '<%= meta.src.www %>/img',
           icons: '<%= meta.src.img.base %>/icon',
@@ -26,8 +35,6 @@ module.exports = function(grunt) {
             avatars: '<%= meta.src.img.base %>/avatar',
           },
         },
-        css: '<%= meta.src.www %>/css',
-        html: '<%= meta.src.www %>',
       },
 
       build: {
@@ -36,6 +43,19 @@ module.exports = function(grunt) {
         html: '<%= meta.build.base %>',
         css: '<%= meta.build.base %>/css/',
         js: '<%= meta.build.base %>/js/',
+        templates: '<%= meta.build.js %>/templates.js',
+      }
+    },
+
+    // Run time environment modifications
+    config: {
+      prod: {
+        options: {
+          variables: {
+            'meta.environment': 'prod',
+            'browserify.options.debug': false,
+          }
+        }
       }
     },
 
@@ -49,10 +69,15 @@ module.exports = function(grunt) {
       options: {
         debug: true,
         transform: ['brfs'],
+        shim: {
+          jquery: { path: './lib/js/jquery.js', exports: '$' },
+          handlebars: { path: './lib/js/handlebars.js', exports: 'Handlebars' },
+        },
       },
       build: {
         files: {
-          '<%= meta.build.js %>/app.js': ['./lib/app.js'],
+          '<%= meta.build.js %>/app.js': ['./src/js/app.js'],
+          '<%= meta.build.js %>/lib.js': ['./lib/js/lib.js'],
         },
       },
     },
@@ -66,7 +91,7 @@ module.exports = function(grunt) {
           cacheLocation: '<%= meta.tmp %>/cache',
           loadPath: [
             '<%= meta.src.css %>',
-          ]
+          ],
         },
         files: {
           '<%= meta.build.css %>/app.css': '<%= meta.src.css %>/app.scss'
@@ -79,26 +104,28 @@ module.exports = function(grunt) {
       index: {
         options: {
           title: '<%= meta.title %>',
-          appBody: '<%= meta.src.html %>/main',
+          styles:  ['css/app.css'],
+          scripts: ['js/lib.js', 'js/templates.js', 'js/app.js'],
         },
-        src: ['<%= meta.src.html %>/index.ejs'],
+        src: ['<%= meta.src.base %>/index.ejs'],
         dest: '<%= meta.build.html %>/index.html',
       },
     },
 
-
-    //
-    // Servers
-    //
-
-    // launch the client server
-    chauffeur: {
-      dev: {
-        port: 8002,
-        staticFiles: [
-          '<%= meta.build.base %>',
-        ],
-        lockfile: 'tmp/chauffeur.lock',
+    // Ember templates
+    emberTemplates: {
+      compile: {
+        options: {
+          templateName: function(sourceFile) {
+            console.log('MODIFYING TEMPLATE NAME: ',sourceFile)
+            var newName = sourceFile.replace(/src\/templates\//, '')
+            console.log('MODIFYING TEMPLATE NAME: ',sourceFile, newName)
+            return newName
+          }
+        },
+        files: {
+          '<%= meta.build.templates %>': '<%= meta.src.templates %>/**/*.hbs'
+        }
       }
     },
 
@@ -108,19 +135,11 @@ module.exports = function(grunt) {
 
     // move files to build dir
     copy: {
-      pacejs: {
+      libcss: {
         files: [{
           expand: true,
-          cwd: '<%= meta.src.vendor %>/',
-          src: ['pace.js'],
-          dest: '<%= meta.build.js %>/',
-        }]
-      },
-      pacecss: {
-        files: [{
-          expand: true,
-          cwd: '<%= meta.src.css %>/',
-          src: ['pace.css'],
+          cwd: '<%= meta.lib.css %>/',
+          src: ['**.css'],
           dest: '<%= meta.build.css %>/',
         }]
       },
@@ -157,11 +176,15 @@ module.exports = function(grunt) {
         tasks: ['lock', 'browserify', 'unlock'],
       },
       html: {
-        files: ['<%= meta.src.html %>/**/*.ejs'],
+        files: ['<%= meta.src.base %>/index.ejs'],
         tasks: ['lock', 'ejs:index', 'unlock'],
         options: {
           livereload: true
         },
+      },
+      templates: {
+        files: ['<%= meta.src.templates %>/**/*.hbs'],
+        tasks: ['lock', 'emberTemplates', 'unlock']
       },
       styles: {
         files: ['<%= meta.src.css %>/**/*.scss','<%= meta.src.css %>/**/*.css'],
@@ -177,13 +200,32 @@ module.exports = function(grunt) {
       build: '<%= meta.tmp %>/*',
     },
 
+    //
+    // Servers
+    //
+
+    // launch the client server
+    chauffeur: {
+      dev: {
+        port: 8002,
+        staticFiles: [
+          '<%= meta.build.base %>',
+        ],
+        lockfile: 'tmp/chauffeur.lock',
+      }
+    },
+
   })
 
   //
   // Load Tasks
   //
 
+  // Runtime Modifications
+  grunt.loadNpmTasks('grunt-config');
+
   // Build
+  grunt.loadNpmTasks('grunt-ember-templates');
   grunt.loadNpmTasks('grunt-browserify')
   grunt.loadNpmTasks('grunt-sass')
   grunt.loadNpmTasks('grunt-ejs')
@@ -211,11 +253,12 @@ module.exports = function(grunt) {
   grunt.registerTask('prod', ['build', 'servers','keepalive'])
 
   // Build
-  grunt.registerTask('build', ['clean', 'build:html', 'build:img', 'build:css', 'build:js'])
+  grunt.registerTask('build', ['clean', 'build:html', 'build:templates', 'build:img', 'build:css', 'build:js'])
   grunt.registerTask('build:html', ['ejs'])
+  grunt.registerTask('build:templates', ['emberTemplates']);
   grunt.registerTask('build:img', ['copy:icons','copy:blocks','copy:avatars'])
-  grunt.registerTask('build:css', ['copy:pacecss','sass:build'])
-  grunt.registerTask('build:js', ['copy:pacejs','browserify'])
+  grunt.registerTask('build:css', ['copy:libcss','sass:build'])
+  grunt.registerTask('build:js', ['browserify'])
   
   // Servers
   grunt.registerTask('servers', ['host','chauffeur:dev'])

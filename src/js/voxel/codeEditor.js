@@ -4,13 +4,13 @@ var createJsEditor = require('javascript-editor')
 var self = module.exports = {
 
   jsEditor: null,
-  
-  container: document.getElementById('jseditor'),
+  container: null,
 
   isOpen: false,
 
   initialize: function(game) {
     self.game = game
+    self.container = document.getElementById('jseditor')
     // inject javascript editor
     self.jsEditor = createJsEditor({
       container: self.container,

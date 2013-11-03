@@ -41,11 +41,13 @@
     "brfs": "0.0.8",
     "grunt-browserify": "1.2.9",
     "grunt-chauffeur": "0.4.4",
+    "grunt-config": "~0.1.4",
     "grunt-contrib-clean": "0.5.0",
     "grunt-contrib-copy": "0.4.1",
     "grunt-contrib-watch": "0.5.3",
     "grunt-ejs": "0.1.0",
     "grunt-sass": "0.6.1",
-    "grunt": "0.4.1"
+    "grunt": "0.4.1",
+    "grunt-ember-templates": "~0.4.15"
   }
 }
