@@ -1,2 +1,4 @@
 // Include all Controllers
-require('./game.js')
+require('./application.js')
+require('./create/index.js')
+require('./host/index.js')

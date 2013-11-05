@@ -1,0 +1,9 @@
+Choose a level:
+<ul>
+  {{#each world in controller}}
+    <li {{action launchWorld world}}>{{world.name}}</li>
+  {{else}}
+    No Worlds Yet :( <br>
+  {{/each}}
+</ul>
+{{#link-to 'create'}}Create A New One!{{/link-to}}

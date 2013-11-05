@@ -116,12 +116,7 @@ module.exports = function(grunt) {
     emberTemplates: {
       compile: {
         options: {
-          templateName: function(sourceFile) {
-            console.log('MODIFYING TEMPLATE NAME: ',sourceFile)
-            var newName = sourceFile.replace(/src\/templates\//, '')
-            console.log('MODIFYING TEMPLATE NAME: ',sourceFile, newName)
-            return newName
-          }
+          templateName: function(sourceFile) { return sourceFile.replace(/src\/templates\//, '') }
         },
         files: {
           '<%= meta.build.templates %>': '<%= meta.src.templates %>/**/*.hbs'

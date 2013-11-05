@@ -5,14 +5,22 @@ App.Router.map(function() {
     this.route('settings')
   })
 
-  // Join an RTC game
-  this.resource('join', function() {
-    this.route('lobby')
+  // Create a new world
+  this.resource('create', function() {
+  
   })
 
-  // // Host an RTC game
-  // this.resource('host', { path: '/host' }, function() {
-  //   this.route('ready', { path: '/host/:rtc_target' })
-  // })
+  // Join a remote game
+  this.resource('join', function() {
+    // join the dedicated lobby server
+    this.route('lobby')
+    // join an RTC game
+    this.resource('join.rtc', { path: 'rtc/:server_id' })
+  })
+
+  // Host an RTC game
+  this.resource('host', function() {
+  
+  })
 
 })

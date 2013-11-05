@@ -25906,7 +25906,7 @@ EmberHandlebars.registerHelper('with', function(context, options) {
     keywordName = arguments[2];
     path = arguments[0];
 
-    Ember.assert("You must pass a block to the with helper", options.fn && options.fn !== Handlebars.VM.noop);
+    Ember.assert("You must pass a block to the with helper", options.fn && options.fn !== Ember.Handlebars.VM.noop);
 
     if (Ember.isGlobalPath(path)) {
       Ember.bind(options.data.keywords, keywordName, path);
@@ -25928,7 +25928,7 @@ EmberHandlebars.registerHelper('with', function(context, options) {
     return bind.call(this, path, options, true, exists);
   } else {
     Ember.assert("You must pass exactly one argument to the with helper", arguments.length === 2);
-    Ember.assert("You must pass a block to the with helper", options.fn && options.fn !== Handlebars.VM.noop);
+    Ember.assert("You must pass a block to the with helper", options.fn && options.fn !== Ember.Handlebars.VM.noop);
     return helpers.bind.call(options.contexts[0], context, options);
   }
 });
@@ -25945,7 +25945,7 @@ EmberHandlebars.registerHelper('with', function(context, options) {
 */
 EmberHandlebars.registerHelper('if', function(context, options) {
   Ember.assert("You must pass exactly one argument to the if helper", arguments.length === 2);
-  Ember.assert("You must pass a block to the if helper", options.fn && options.fn !== Handlebars.VM.noop);
+  Ember.assert("You must pass a block to the if helper", options.fn && options.fn !== Ember.Handlebars.VM.noop);
 
   return helpers.boundIf.call(options.contexts[0], context, options);
 });
@@ -25959,7 +25959,7 @@ EmberHandlebars.registerHelper('if', function(context, options) {
 */
 EmberHandlebars.registerHelper('unless', function(context, options) {
   Ember.assert("You must pass exactly one argument to the unless helper", arguments.length === 2);
-  Ember.assert("You must pass a block to the unless helper", options.fn && options.fn !== Handlebars.VM.noop);
+  Ember.assert("You must pass a block to the unless helper", options.fn && options.fn !== Ember.Handlebars.VM.noop);
 
   var fn = options.fn, inverse = options.inverse;
 
@@ -26888,7 +26888,7 @@ Ember.Handlebars.registerHelper('collection', function(path, options) {
   }
 
   var emptyViewClass;
-  if (inverse && inverse !== Handlebars.VM.noop) {
+  if (inverse && inverse !== Ember.Handlebars.VM.noop) {
     emptyViewClass = get(collectionPrototype, 'emptyViewClass');
     emptyViewClass = emptyViewClass.extend({
           template: inverse,

@@ -1,0 +1,4 @@
+Create a New World<br>
+==================<br>
+name: {{view Em.TextField valueBinding="worldName"}}
+<button {{action generateWorld}} {{bind-attr disabled="worldSettingsInvalid"}}>generate world</button>

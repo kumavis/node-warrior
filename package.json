@@ -35,7 +35,13 @@
     "voxel": "0.3.1",
     "walkietalkie": "1.0.0",
     "websocket-stream": "0.0.5",
-    "ws": "0.4.30"
+    "ws": "0.4.30",
+    "level-user": "~1.2.0",
+    "concat-stream": "~1.1.0",
+    "hat": "0.0.3",
+    "rtc": "~0.6.0",
+    "cog": "~0.3.1",
+    "rtc-data-stream": "0.0.1"
   },
   "devDependencies": {
     "brfs": "0.0.8",
