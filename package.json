@@ -20,6 +20,7 @@
     "duplex-emitter": "0.1.10",
     "ecstatic": "0.3.0",
     "extend": "1.2.1",
+    "hat": "0.0.3",
     "javascript-editor": "git://github.com/kumavis/javascript-editor.git",
     "level-sublevel": "5.1.1",
     "level": "0.16.0",
