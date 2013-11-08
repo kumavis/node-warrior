@@ -1,7 +1,6 @@
 var rtcDataStream = require('rtc-data-stream')
 var duplexEmitter = require('duplex-emitter')
 var WalkieTalkieChannel = require('walkietalkie')
-var Rtc = require('../../../voxel/rtc.js')
 
 App.JoinRtcRoute = Em.Route.extend({
 
@@ -15,22 +14,27 @@ App.JoinRtcRoute = Em.Route.extend({
     debugger
   },
 
-  setupController: function(controller, serverId) {
+  setupController: function(controller, targetRtcHash) {
     var applicationController = this.controllerFor('application')
-    var existingHash = applicationController.get('rtcServer.hash')
+    var existingRtcHash = applicationController.get('rtcConnection.hash')
     // Self Hosted
-    if (serverId === existingHash) {
+    if (targetRtcHash === existingRtcHash) {
       var localNetwork = WalkieTalkieChannel()
-      applicationController.connect(localNetwork.WalkieTalkie())
+      var connectionClient = localNetwork.WalkieTalkie()
+      var connectionServer = localNetwork.WalkieTalkie()
+      
+      // ! Debug !
+      connectionClient.on('id',function(){console.log('connection got id',arguments)})
+      connectionClient.on('settings' ,function(){console.log('connection got settings',arguments)})
+      connectionClient.on('chunk' ,function(){console.log('connection got chunk',arguments)})
+      connectionClient.on('noMoreChunks' ,function(){console.log('connection got noMoreChunks',arguments)})
+      connectionServer.on('created',function(){console.log('connection got created',arguments)})
+      // ! Debug !
+
+      applicationController.connect(connectionClient,connectionServer)
     // Remote Hosted
     } else {
-      var rtc = Rtc({
-        hash: serverId,
-        signaller: 'http://sig.rtc.io:50000',
-        ns: 'dctest',
-        data: true,
-        debug: true,
-      })
+      var rtc = applicationController.connectRtc(targetRtcHash)
       rtc.on('dc:open', function(channel, peerId) {
         var dataStream = rtcDataStream(channel)
         var connection = duplexEmitter(dataStream)

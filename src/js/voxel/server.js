@@ -68,6 +68,10 @@ Server.prototype.initialize = function(opts) {
   // create and initialize base game server
   var baseServer = self.baseServer = voxelServer(settings)
   self.game = baseServer.game
+
+  // sane defaults
+  self.modvoxes = {}
+  self.spatialTriggers = []
   
   self.bindServerEvents()
 }
@@ -123,7 +127,7 @@ Server.prototype.bindServerEvents = function() {
       , dimensions = [cs, cs, cs]
     self.voxelDb.load(settings.worldId, position, dimensions, function(err, chunk) {
       if (err) return console.error('chunk load error', err.stack)
-      console.log('loaded chunk: '+position.join('|'))
+      // console.log('loaded chunk: '+position.join('|'))
       var chunk = {
         position: position,
         voxels: new Uint8Array(chunk.voxels.buffer),

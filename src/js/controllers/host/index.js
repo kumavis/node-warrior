@@ -8,8 +8,9 @@ App.HostIndexController = Em.ArrayController.extend({
     // launch a server for this world
     launchWorld: function(world) {
       var applicationController = this.controllerFor('application')
-      var serverId = applicationController.startServer(world)
-      this.transitionToRoute('join.rtc',serverId)
+      applicationController.startGameServer(world)
+      var rtcHash = applicationController.get('rtcConnection.hash')
+      this.transitionToRoute('join.rtc',rtcHash)
     },
 
   },

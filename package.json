@@ -31,29 +31,27 @@
     "voxel-highlight": "0.0.9",
     "voxel-level": "2.1.0",
     "voxel-rescue": "git://github.com/flyswatter/voxel-rescue.git",
-    "voxel-server": "1.0.0",
+    "voxel-server": "1.0.1",
     "voxel": "0.3.1",
     "walkietalkie": "1.0.0",
     "websocket-stream": "0.0.5",
     "ws": "0.4.30",
-    "level-user": "~1.2.0",
-    "concat-stream": "~1.1.0",
-    "hat": "0.0.3",
-    "rtc": "~0.6.0",
-    "cog": "~0.3.1",
+    "level-user": "1.2.0",
+    "concat-stream": "1.1.0",
+    "rtc-quickconnect": "git://github.com/kumavis/rtc-quickconnect.git",
     "rtc-data-stream": "0.0.1"
   },
   "devDependencies": {
     "brfs": "0.0.8",
     "grunt-browserify": "1.2.9",
     "grunt-chauffeur": "0.4.4",
-    "grunt-config": "~0.1.4",
+    "grunt-config": "0.1.4",
     "grunt-contrib-clean": "0.5.0",
     "grunt-contrib-copy": "0.4.1",
     "grunt-contrib-watch": "0.5.3",
     "grunt-ejs": "0.1.0",
     "grunt-sass": "0.6.1",
     "grunt": "0.4.1",
-    "grunt-ember-templates": "~0.4.15"
+    "grunt-ember-templates": "0.4.15"
   }
 }
