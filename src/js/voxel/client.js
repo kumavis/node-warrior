@@ -162,13 +162,7 @@ Client.prototype.setup = function() {
   })
 
   // highlight blocks when you look at them, hold <Ctrl> for block placement
-  var blockPosPlace, blockPosErase
-  game.highlighter = highlight(game, {
-    color: 0xff0000,
-    adjacentActive: function() {
-      return game.controls.state.alt || game.controls.state.firealt
-    },
-  })
+  game.highlighter = highlight(game, { color: 0xff0000 })
 
   // toggle between first and third person modes
   window.addEventListener('keydown', function (event) {
@@ -214,31 +208,15 @@ Client.prototype.setup = function() {
   })
   toolSelector.switchToolbar(0)
 
-  // game right click event, place block
-  game.on('firealt', function (target, state) {
-    // Set the block placing variable the position in the world adjacent to the block the player is aiming at
-    blockPosPlace = voxelPos
-    self.codeBeam.runCode({
-      game: game,
-      avatar: avatar,
-      hitBlock: blockPosPlace || blockPosErase,
-      secondaryClick: !!blockPosPlace,
-      client: self,
-      setBlock: setBlock,
-      getBlock: game.getBlock,
-      require: require,
-    })
-  })
-
   // game click event, run code
-  game.on('fire', function (target, state) {
-    var firealt = game.controls.state.alt || game.controls.state.firealt
+  game.on('fire', function runCode() {
+    var isAltFire = Boolean(game.controls.state.alt || game.controls.state.firealt)
     game.highlighter.highlight()
     self.codeBeam.runCode({
       game: game,
       avatar: avatar,
-      hitBlock: firealt ? game.highlighter.currVoxelAdj : game.highlighter.currVoxelPos,
-      secondaryClick: firealt,
+      hitBlock: isAltFire ? game.highlighter.currVoxelAdj : game.highlighter.currVoxelPos,
+      secondaryClick: isAltFire,
       client: self,
       setBlock: setBlock,
       getBlock: game.getBlock,
