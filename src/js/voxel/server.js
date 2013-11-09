@@ -3,7 +3,8 @@ var path = require('path')
 var extend = require('extend')
 // voxel depenencies
 var voxelServer = require('voxel-server')
-
+// internal dependencies
+var modvox = require('./features/modvox/server.js')
 
 module.exports = Server
 
@@ -20,7 +21,7 @@ function Server(opts) {
 Server.prototype.connectClient = function(connection) {
   var self = this
   self.baseServer.connectClient(connection)
-  self.bindClientEvents(connection)
+  self.bindEvents(connection)
   console.log(connection.id, 'joined')
 }
 
@@ -56,7 +57,7 @@ Server.prototype.initialize = function(opts) {
       'bluewool',
     ],
     avatarInitialPosition: [2, 20, 2],
-    forwardEvents: ['chat','modvox','spatialTrigger'],
+    forwardEvents: ['chat','spatialTrigger'],
   }
   var settings = self.settings = extend({}, defaults, opts)
 
@@ -65,29 +66,27 @@ Server.prototype.initialize = function(opts) {
   // remove db from settings hash so we dont send it over the connection
   delete settings.voxelDb
 
+  // enable event forwarding for features
+  settings.forwardEvents.push('modvox')
+
   // create and initialize base game server
   var baseServer = self.baseServer = voxelServer(settings)
   self.game = baseServer.game
 
   // sane defaults
-  self.modvoxes = {}
   self.spatialTriggers = []
   
-  self.bindServerEvents()
+  self.bindEvents()
+
+  // add features
+  modvox(self)
 }
 
-Server.prototype.bindClientEvents = function(connection) {
-  var self = this
-}
-
-Server.prototype.bindServerEvents = function() {
+Server.prototype.bindEvents = function() {
   var self = this
   var settings = self.settings
   var baseServer = self.baseServer
   var game = self.game
-
-  // setup modvoxes
-  self.setupModvoxes()
 
   // setup spatial triggers
   self.setupSpatialTriggers()
@@ -116,7 +115,6 @@ Server.prototype.bindServerEvents = function() {
   function storeChunk(chunk) {
     self.voxelDb.store(settings.worldId, chunk, function afterStore(err) {
       if (err) console.error('chunk store error', err.stack)
-      console.log('stored chunk: '+chunk.position.join('|'))
     })
   }
   
@@ -127,7 +125,6 @@ Server.prototype.bindServerEvents = function() {
       , dimensions = [cs, cs, cs]
     self.voxelDb.load(settings.worldId, position, dimensions, function(err, chunk) {
       if (err) return console.error('chunk load error', err.stack)
-      // console.log('loaded chunk: '+position.join('|'))
       var chunk = {
         position: position,
         voxels: new Uint8Array(chunk.voxels.buffer),
@@ -139,48 +136,6 @@ Server.prototype.bindServerEvents = function() {
 
 }
 
-Server.prototype.setupModvoxes = function() {
-  var self = this
-  var baseServer = self.baseServer
-  
-  // get modvoxes from db
-  self.voxelDb.db.get('modvoxes',function(err,val) {
-    self.modvoxes = val ? JSON.parse(val) : {}
-  })
-
-  // set modvox
-  baseServer.on('modvox',function(pos,code) {
-    console.log('MODVOX')
-    console.log(pos,code)
-    self.modvoxes[pos.join('|')] = code
-    updateModvoxStore()
-  })
-  // remove modvox on overwrite
-  baseServer.on('set', function(pos,val) {
-    var modvox = self.modvoxes[pos.join('|')]
-    if (modvox) {
-      console.log('OVERWRITE MODVOX')
-      delete self.modvoxes[pos.join('|')]
-      updateModvoxStore()
-    }
-  })
-  // send modvoxes on join
-  baseServer.on('client.join',function(client) {
-    Object.keys(self.modvoxes).map(function(posKey) {
-      var code = self.modvoxes[posKey]
-      var pos = posKey.split('|')
-      client.connection.emit('modvox',pos,code)
-    })
-  })
-  // store modvoxes
-  function updateModvoxStore() {
-    console.log('UPDATE MODVOX STORE')
-    console.log(self.modvoxes)
-    self.voxelDb.db.put('modvoxes',JSON.stringify(self.modvoxes))
-  }
-
-}
-
 Server.prototype.setupSpatialTriggers = function() {
   var self = this
   var baseServer = self.baseServer
@@ -188,8 +143,6 @@ Server.prototype.setupSpatialTriggers = function() {
   // get modvoxes from db
   self.voxelDb.db.get('spatialTriggers',function(err,val) {
     self.spatialTriggers = val ? JSON.parse(val) : []
-    console.log("== spatialTriggers ==")
-    console.log(self.spatialTriggers)
   })
 
   // set modvox

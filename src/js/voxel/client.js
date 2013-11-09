@@ -10,11 +10,11 @@ var chat = require('./chat.js')
 var codeBeam = require('./codeBeam.js')
 var codeEditor = require('./codeEditor.js')
 var playerTools = require('./defaultTools.js')
-var trigger = require('spatial-trigger')
-var aabb = require('aabb-3d')
+var modvox = require('./features/modvox/client.js')
 // some extra modules exposed for the gun
 require('minecraft-skin')
-
+var trigger = require('spatial-trigger')
+var aabb = require('aabb-3d')
 
 module.exports = Client
 
@@ -44,6 +44,9 @@ Client.prototype.initialize = function(opts) {
   // bind events
   self.bindServerEvents()
   self.bindClientEvents()
+
+  // add features
+  self.modvox = modvox(self)
 }
 
 Client.prototype.bindServerEvents = function() {
@@ -70,11 +73,6 @@ Client.prototype.bindServerEvents = function() {
   connection.on('leave',function(user) {
     var message = user + ' left.'
     self.chat.showMessage(message)
-  })
-
-  self.modvoxes = {}
-  connection.on('modvox',function(pos,code) {
-    self.modvoxes[pos.join('|')] = code
   })
 
   self.spatialTriggers = []
@@ -246,8 +244,8 @@ Client.prototype.setup = function() {
       getBlock: game.getBlock,
       require: require,
       createSpatialTrigger: createSpatialTrigger,
-      setModVox: setModVox,
-      openModVox: openModVox,
+      openModVox: self.modvox.openModVox,
+      setModVox: self.modvox.setModVox,
     })
   })
  
@@ -296,27 +294,7 @@ Client.prototype.setup = function() {
     
   }
 
-  // create or overwrite a modvox
-  function setModVox(pos,code) {
-    // set locally
-    self.modvoxes[pos.join('|')] = code
-    // send remotely
-    console.log('EMIT MOD VOX',pos,code)
-    self.connection.emit('modvox',pos,code)
-  }
-
-  // open a modvox in the editor
-  function openModVox(pos) {
-    // skip if no modvox at pos
-    if (undefined === self.modvoxes[pos.join('|')]) return
-    // get code from modvox
-    var code = self.modvoxes[pos.join('|')]
-    // open code in editor
-    self.codeEditor.open(code,function(newCode) {
-      // update code in modvox when done
-      setModVox(pos,newCode)
-    })
-  }
+  
 }
 
 Client.prototype._createSpatialTrigger = function(spatialTrigger) {
