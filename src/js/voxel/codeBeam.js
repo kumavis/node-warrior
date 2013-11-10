@@ -12,6 +12,8 @@ var envVars = [
   'createEntity',
   'setModVox',
   'openModVox',
+  'createEntity',
+  'createNpc',
 ]
 
 var self = module.exports = {

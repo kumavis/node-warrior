@@ -5,6 +5,7 @@ var extend = require('extend')
 var voxelServer = require('voxel-server')
 // internal dependencies
 var modvox = require('./features/modvox/server.js')
+var entity = require('./features/entity/server.js')
 
 module.exports = Server
 
@@ -68,6 +69,7 @@ Server.prototype.initialize = function(opts) {
 
   // enable event forwarding for features
   settings.forwardEvents.push('modvox')
+  settings.forwardEvents.push('npc')
 
   // create and initialize base game server
   var baseServer = self.baseServer = voxelServer(settings)
@@ -80,6 +82,7 @@ Server.prototype.initialize = function(opts) {
 
   // add features
   modvox(self)
+  entity(self)
 }
 
 Server.prototype.bindEvents = function() {

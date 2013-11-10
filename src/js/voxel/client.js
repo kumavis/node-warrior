@@ -10,7 +10,9 @@ var chat = require('./chat.js')
 var codeBeam = require('./codeBeam.js')
 var codeEditor = require('./codeEditor.js')
 var playerTools = require('./defaultTools.js')
+// internal features
 var modvox = require('./features/modvox/client.js')
+var entity = require('./features/entity/client.js')
 // some extra modules exposed for the gun
 require('minecraft-skin')
 var trigger = require('spatial-trigger')
@@ -47,6 +49,7 @@ Client.prototype.initialize = function(opts) {
 
   // add features
   self.modvox = modvox(self)
+  self.entity = entity(self)
 }
 
 Client.prototype.bindServerEvents = function() {
@@ -97,10 +100,8 @@ Client.prototype.bindClientEvents = function() {
   baseClient.on('loadComplete', function() {
     console.log('got initial chunks')
     // render game in browser window
-    var game = baseClient.game
+    var game = self.game = baseClient.game
     game.appendTo(self.settings.container)
-    
-    window.game = game
     // setup app-specific game particulars
     self.setup(baseClient)
   })
@@ -224,6 +225,7 @@ Client.prototype.setup = function() {
       createSpatialTrigger: createSpatialTrigger,
       openModVox: self.modvox.openModVox,
       setModVox: self.modvox.setModVox,
+      createNpc: self.entity.createNpc,
     })
   })
  
@@ -267,12 +269,6 @@ Client.prototype.setup = function() {
     })
   }
 
-  // create entitiy
-  function createEntity(pos,mesh) {
-    
-  }
-
-  
 }
 
 Client.prototype._createSpatialTrigger = function(spatialTrigger) {
