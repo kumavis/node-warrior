@@ -74,9 +74,13 @@ module.exports = function(grunt) {
           handlebars: { path: './lib/js/handlebars.js', exports: 'Handlebars' },
         },
       },
-      build: {
+      app: {
         files: {
           '<%= meta.build.js %>/app.js': ['./src/js/app.js'],
+        },
+      },
+      lib: {
+        files: {
           '<%= meta.build.js %>/lib.js': ['./lib/js/lib.js'],
         },
       },
@@ -168,7 +172,11 @@ module.exports = function(grunt) {
     watch: {
       app: {
         files: ['<%= meta.src.js %>/**/*.js'],
-        tasks: ['lock', 'browserify', 'unlock'],
+        tasks: ['lock', 'browserify:app', 'unlock'],
+      },
+      lib: {
+        files: ['<%= meta.lib.js %>/**/*.js'],
+        tasks: ['lock', 'browserify:lib', 'unlock'],
       },
       html: {
         files: ['<%= meta.src.base %>/index.ejs'],
@@ -253,7 +261,7 @@ module.exports = function(grunt) {
   grunt.registerTask('build:templates', ['emberTemplates']);
   grunt.registerTask('build:img', ['copy:icons','copy:blocks','copy:avatars'])
   grunt.registerTask('build:css', ['copy:libcss','sass:build'])
-  grunt.registerTask('build:js', ['browserify'])
+  grunt.registerTask('build:js', ['browserify:lib','browserify:app'])
   
   // Servers
   grunt.registerTask('servers', ['host','chauffeur:dev'])
