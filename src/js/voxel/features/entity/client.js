@@ -1,6 +1,6 @@
-var hat = require('hat'),
-    extend = require('extend'),
-    skin = require('minecraft-skin')
+var hat = require('hat')
+  , extend = require('extend')
+  , skin = require('minecraft-skin')
 
 module.exports = function(client) {
  
@@ -21,6 +21,7 @@ module.exports = function(client) {
   // expose api for consumer
   return {
     createNpc: createNpc,
+    selectEntity: selectEntity,
   }
 
   // create an entity
@@ -40,9 +41,14 @@ module.exports = function(client) {
       , filePath = /*client.settings.texturePath+*/skinName
       , THREE = client.game.THREE
     // create npc object
-    var npc = skin(THREE, filePath, {scale: new THREE.Vector3(0.04, 0.04, 0.04)}).createPlayerObject()
+    var npc = skin(THREE, filePath, { scale: new THREE.Vector3(0.04, 0.04, 0.04) }).createPlayerObject()
     // add npc to entity registry
-    client.entities[uuid] = npc
+    var newEntity = {
+      uuid: uuid,
+      object: npc,
+    }
+    npc.entity = newEntity
+    client.entities[uuid] = newEntity
     // add to scene
     client.game.scene.add(npc)
     // position npc
@@ -50,29 +56,40 @@ module.exports = function(client) {
     return npc
   }
 
-  // // open a modvox in the editor
-  // function openModVox(pos) {
-  //   // skip if no modvox at pos
-  //   if (undefined === client.entities[pos.join('|')]) return
-  //   // get code from modvox
-  //   var code = client.entities[pos.join('|')]
-  //   // open code in editor
-  //   client.codeEditor.open(code,function(newCode) {
-  //     // update code in modvox when done
-  //     setModVox(pos,newCode)
-  //   })
-  // }
+  // find an entity from a raycast from the camera's perspective
+  function selectEntity() {
+    var game = client.game
+      , THREE = game.THREE
+      , cameraPos = game.cameraPosition()
+      , cameraDir = game.cameraVector()
+      , origin = new THREE.Vector3()
+      , direction = new THREE.Vector3()
+      , near = 0
+      , far = 50
 
-  // function prepareForTransmission(entity) {
-  //   // an empty object to fill with basic info
-  //   var copy = {}
-  //   // remove parent
-  //   delete copy.parent
-  //   // repeat process for children
-  //   copy.children.map(function(child,index) {
-  //     copy.children[index] = prepareForTransmission(child)
-  //   })
-  //   return copy
-  // }
-  
+    // set origin and direction
+    origin.set.apply(origin,cameraPos)
+    direction.set.apply(direction,cameraDir)
+
+    // cast a ray in the orientation of the camera
+    var ray = new THREE.Raycaster( origin, direction, near, far )
+    var hits = ray.intersectObjects( game.scene.children, true )
+    // Get the root ancestor of the first object that we hit
+    var firstHit = hits[0]
+    var rootHit = findRootParent(firstHit.object)
+
+    return rootHit.entity
+
+  }
+
+  // find ancestor that is an immediate child of the scene
+  function findRootParent(obj) {
+    var THREE = client.game.THREE
+      , next = obj.parent
+    if (! (next instanceof THREE.Scene) ) {
+      obj = findRootParent(next)
+    }
+    return obj
+  }
+   
 }

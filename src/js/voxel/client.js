@@ -226,6 +226,7 @@ Client.prototype.setup = function() {
       openModVox: self.modvox.openModVox,
       setModVox: self.modvox.setModVox,
       createNpc: self.entity.createNpc,
+      selectEntity: self.entity.selectEntity,
     })
   })
  

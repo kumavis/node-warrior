@@ -10,6 +10,7 @@ var envVars = [
   'require',
   'createSpatialTrigger',
   'createEntity',
+  'selectEntity',
   'setModVox',
   'openModVox',
   'createEntity',
