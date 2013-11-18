@@ -9,12 +9,11 @@ var envVars = [
   'client',
   'require',
   'createSpatialTrigger',
-  'createEntity',
-  'selectEntity',
   'setModVox',
   'openModVox',
-  'createEntity',
   'createNpc',
+  'selectEntity',
+  'updateEntity',
 ]
 
 var self = module.exports = {

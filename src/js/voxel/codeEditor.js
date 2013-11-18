@@ -60,6 +60,7 @@ var self = module.exports = {
 
   // show the code editor, given initial code and a callback 
   open: function(startCode, onComplete) {
+    startCode = startCode || String()
     // if already open, finalize previous code
     if (self.isOpen) self.finalizeCode()
     // show editor

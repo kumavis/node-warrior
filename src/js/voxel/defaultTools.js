@@ -10,9 +10,7 @@ var toolSources = {
   stairs: fs.readFileSync(__dirname + '/tools/stairs.js'),
   house: fs.readFileSync(__dirname + '/tools/house.js'),
   teleport: fs.readFileSync(__dirname + '/tools/teleport.js'),
-  makeMax: fs.readFileSync(__dirname + '/tools/makeMax.js'),
-  aabb: fs.readFileSync(__dirname + '/tools/aabb.js'),
-  raycast: fs.readFileSync(__dirname + '/tools/raycast.js'),
+  npc: fs.readFileSync(__dirname + '/tools/npc.js'),
 }
 
 // convert source files to tool objects
