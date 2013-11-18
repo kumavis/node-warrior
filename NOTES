@@ -1,6 +1,7 @@
-TODO
+NOTES
 
 game dev env
+- event propagation problems
 - error/output to console
 - code mirror auto complete?
 - allow modules, requirebin style
@@ -16,13 +17,6 @@ client
 - hide and request chunks when far away
 
 
-FEATURE >> code blocks  <<
-
-basic
-  client
-  - ui for editing code cubes
-advanced
-  - sanitize/sanbox code from user (yikes)
 
 NOTES: ( CAFE VOXEL TIME )
 
