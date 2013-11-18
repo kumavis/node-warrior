@@ -69,7 +69,6 @@ module.exports = function(server) {
   // step through npcs and animate
   function animateNpcs() {
     var npcUuids = Object.keys(server.entities)
-    console.log('animating ',npcUuids.length,' npcs...')
     var npcs = npcUuids.map(function(uuid){ return server.entities[uuid] })
     npcs.map(function(npc) {
       if (npc.update) {

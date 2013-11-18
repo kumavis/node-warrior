@@ -20,9 +20,34 @@ module.exports = function(client) {
     }
   })
 
-  // register for npc updates
-  client.connection.on('npc.update', _updateNpcState)
-  window._updateNpcState = _updateNpcState
+  // register for events when game is ready
+  client.baseClient.on('loadComplete', function() {
+
+    // register for npc updates
+    client.connection.on('npc.update', _updateNpcState)
+
+    // on game loop, animate entity position and rotatio
+    client.game.on('tick', function(delta) {
+      var THREE = client.game.THREE
+      var lerpPercent = Math.min(delta/100,1)
+      var npcUuids = Object.keys(client.npcs)
+      npcUuids.map(function(uuid) {
+        var npc = client.npcs[uuid]
+        var object3D = npc.mesh
+        var pos = new THREE.Vector3(npc.pos[0],npc.pos[1],npc.pos[2])
+        var rot = new THREE.Vector3(npc.rot[0],npc.rot[1],npc.rot[2])
+        // lerp position
+        object3D.position.lerp(pos, lerpPercent)
+        // lerp rotation
+        var targetBodyRot = rot.clone().add(new THREE.Vector3(0,Math.PI/2,0))
+        object3D.children[0].rotation.y = object3D.children[0].rotation.clone().lerp(targetBodyRot, lerpPercent).y
+        var targetHeadRot = npc.head.rotation.clone().setZ(scale(rot.x, -1.5, 1.5, -0.75, 0.75))
+        npc.head.rotation.z = npc.head.rotation.clone().lerp(targetHeadRot, lerpPercent).z
+      })
+
+    })
+
+  })
 
   // expose api for consumer
   return {
@@ -83,7 +108,6 @@ module.exports = function(client) {
   function _addNpc(npcData) {
     var uuid = npcData.uuid
       , skinName = npcData.skinName
-      , pos = npcData.pos
       , THREE = client.game.THREE
     // create npc object
     var npc = skin(THREE, skinName, {
@@ -99,12 +123,13 @@ module.exports = function(client) {
     })
     npcMesh.entity = newEntity
     // remove extraneous info
-    delete newEntity.pos
     delete newEntity.skinName
     // add npc to entity registry
     client.entities[uuid] = newEntity
     client.npcs[uuid] = npc
     // position npc
+    var pos = npc.pos = npcData.pos
+    var rot = npc.rot = npcData.rot
     npcMesh.position.set(pos[0], pos[1], pos[2])
     return npc
   }
@@ -137,15 +162,8 @@ module.exports = function(client) {
     THREE = client.game.THREE
     npcMesh = npc.mesh
 
-    if (update.position) {
-      var pos = new THREE.Vector3(update.position[0],update.position[1],update.position[2])
-      npcMesh.position.copy(npcMesh.position.lerp(pos, lerpPercent))
-    }
-    if (update.rotation) {
-      var rot = new THREE.Vector3(update.rotation[0],update.rotation[1],update.rotation[2])
-      npcMesh.children[0].rotation.y = rot.y + (Math.PI / 2)
-      npc.head.rotation.z = scale(rot.x, -1.5, 1.5, -0.75, 0.75)
-    }
+    if (update.position) npc.pos = update.position
+    if (update.rotation) npc.rot = update.rotation
   }
    
 }
