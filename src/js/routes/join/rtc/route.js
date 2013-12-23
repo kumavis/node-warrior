@@ -10,28 +10,32 @@ App.JoinRtcRoute = Em.Route.extend({
     return args.server_id
   },
 
-  serialize: function() {
-    debugger
-  },
-
   setupController: function(controller, targetRtcHash) {
     var applicationController = this.controllerFor('application')
     var existingRtcHash = applicationController.get('rtcConnection.hash')
     // Self Hosted
     if (targetRtcHash === existingRtcHash) {
       var localNetwork = WalkieTalkieChannel()
-      var connectionClient = localNetwork.WalkieTalkie()
-      var connectionServer = localNetwork.WalkieTalkie()
+      var server = localNetwork.WalkieTalkie()
+      var client = localNetwork.WalkieTalkie()
       
       // ! Debug !
-      connectionClient.on('id',function(){console.log('connection got id',arguments)})
-      connectionClient.on('settings' ,function(){console.log('connection got settings',arguments)})
-      connectionClient.on('chunk' ,function(){console.log('connection got chunk',arguments)})
-      connectionClient.on('noMoreChunks' ,function(){console.log('connection got noMoreChunks',arguments)})
-      connectionServer.on('created',function(){console.log('connection got created',arguments)})
+      console.log('-- connection logging enabled, "update" squeltched --')
+      function logger(isClient){
+        return function(args){
+          var args = [].slice.apply(args)
+          var eventName = args.shift()
+          var direction = isClient ? '-->' : '<--'
+          if (eventName !== 'update') {
+            console.log(direction,eventName,args)
+          }
+        }
+      }
+      server.on('*',logger(false))
+      client.on('*',logger(true))
       // ! Debug !
 
-      applicationController.connect(connectionClient,connectionServer)
+      applicationController.connect(server,client)
     // Remote Hosted
     } else {
       var rtc = applicationController.connectRtc(targetRtcHash)

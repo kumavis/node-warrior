@@ -220,7 +220,7 @@ Client.prototype.setup = function() {
       secondaryClick: isAltFire,
       client: self,
       setBlock: setBlock,
-      getBlock: game.getBlock,
+      getBlock: game.getBlock.bind(game),
       require: require,
       createSpatialTrigger: createSpatialTrigger,
       openModVox: self.modvox.openModVox,

@@ -1,6 +1,88 @@
 // TODO "insert actual security here"
 // TODO run non-block / in different thread / worker
 
+/*
+
+NODE.JS global objects:
+======================
+
+global
+process
+console
+Class: Buffer
+require()
+require.resolve()
+require.cache
+require.extensions
+__filename
+__dirname
+module
+exports
+setTimeout(cb, ms)
+clearTimeout(t)
+setInterval(cb, ms)
+clearInterval(t)
+
+CHROME global objects:
+=====================
+//== ==
+//== Standard global objects (by category)
+//== ==
+
+//== General-purpose constructors
+Array
+Boolean
+Date
+Function
+Number
+Object
+RegExp
+String
+//== Typed array constructors
+ArrayBuffer
+DataView
+Float32Array
+Float64Array
+Int16Array
+Int32Array
+Int8Array
+Uint16Array
+Uint32Array
+Uint8Array
+Uint8ClampedArray
+//== Internationalization constructors
+Intl.Collator
+Intl.DateTimeFormat
+Intl.NumberFormat
+//== Error constructors
+Error
+EvalError
+RangeError
+ReferenceError
+SyntaxError
+TypeError
+URIError
+//== Non-constructor functions
+decodeURI
+decodeURIComponent
+encodeURI
+encodeURIComponent
+eval
+isFinite
+isNaN
+parseFloat
+parseInt
+//== Other
+Infinity
+Intl
+JSON
+Math
+NaN
+undefined
+null
+
+*/
+
 module.exports = function(userCode,self,environment) {
   
   environment = environment || {}

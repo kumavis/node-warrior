@@ -1,5 +1,5 @@
-==========<br>
-{{#link-to 'index'}}App Bar{{/link-to}}<br>
-==========<br>
-
 {{outlet}}
+
+<div id="gameContainer" {{bind-attr class="showGame::hidden"}}>
+  {{render 'game'}}
+</div>

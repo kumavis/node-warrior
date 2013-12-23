@@ -4,12 +4,16 @@ var duplexEmitter = require('duplex-emitter')
 var levelUser = require('level-user')
 var voxelLevel = require('voxel-level')
 var concat = require('concat-stream')
+var uuid = require('hat')
 // local dependencies
 var Client = require('../voxel/client.js')
 var Server = require('../voxel/server.js')
 var Rtc = require('rtc-quickconnect')
 
 App.ApplicationController = Em.Controller.extend({
+
+  // whether to display the game or hide it
+  showGame: false,
 
   // the current user
   user: levelUser({dbName: 'voxeljs', baseURL: document.domain }),
@@ -72,6 +76,7 @@ App.ApplicationController = Em.Controller.extend({
   },
 
   connectRtc: function connectRtc(hash) {
+    hash = hash || uuid()
     // start webRTC server
     var rtcConnection = Rtc({
       signaller: 'http://sig.rtc.io:50000',
