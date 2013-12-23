@@ -1,5 +1,11 @@
 NOTES
 
+app
+- remove app bar
+- have game controller be singleton
+- render game at application level, conditionally invisibile
+- ensure routes are working
+
 game dev env
 - event propagation problems
 - error/output to console
@@ -12,6 +18,8 @@ bugs
 server
 - extract voxel-level
 - move chunks in and out of memory as active/inactive
+- sleep inactive games
+- safe eval environment
 
 client
 - hide and request chunks when far away

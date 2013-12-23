@@ -18,96 +18,96 @@ input, input:focus {
   display: none;
 }
 
-#container {
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-#crosshair {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin: -2px 0 0 -2px;
-  width: 4px;
-  height: 4px;
-  background-color: #d00;
-  opacity: 0.5;
-}
+// voxel styles
 
 #stats {
   bottom: 0px;
   right: 0px;
 }
 
-.logo {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-}
+#gameContainer {
 
-.errorMessage {
-  text-align: center;
-  width: 200px;
-  margin: 20px auto;
-}
-
-#jseditor{
-  position: absolute;
-  width: 100%;
-  bottom: 100px;
-  top: 0%;
-  border-bottom: solid 1px;
-
-  .left, .right { height: 100%; overflow: visible; display: block; float: left; position: relative; width: 50%; }
-  .right { background: #eee; }
-
-  .CodeMirror {
-    font-size: 20px;
-    background-color: rgba(0, 0, 0, 0.45);
-    .errorLine { background: rgba(255,0,0,0.25); }
-  }
-  
-  .CodeMirror-scroll { overflow: auto; }
-
-  @media all and (max-width: 800px) { .CodeMirror { font-size: 14px !important; } }
-
-}
-
-#blocks { bottom: 50px; }
-#tools { bottom: 0px; }
-
-#blocks, #tools {
-  left: 25%;
-}
-
-#chat {
-  background: rgba(0, 0, 0, 0.45);
-  position: absolute;
-  height: 100px;
-  width: 25%;
-  bottom: 0;
-
-  #messages {
-    color: magenta;
-    max-height: 80px;
-    overflow: auto;
+  #container {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
-  #cmdbox {
+  #crosshair {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin: -2px 0 0 -2px;
+    width: 4px;
+    height: 4px;
+    background-color: #d00;
+    opacity: 0.5;
+  }
+
+  .errorMessage {
+    text-align: center;
+    width: 200px;
+    margin: 20px auto;
+  }
+
+  #jseditor{
     position: absolute;
-    bottom: 0;
-    
-    input {
-      color: orange;
-      box-shadow: none;
-      height: 20px;
-      padding: 0;
-      margin: 0;
-      background: none;
-      border: none;
-      border-radius: 0;
+    width: 100%;
+    bottom: 100px;
+    top: 0%;
+    border-bottom: solid 1px;
+
+    .left, .right { height: 100%; overflow: visible; display: block; float: left; position: relative; width: 50%; }
+    .right { background: #eee; }
+
+    .CodeMirror {
+      font-size: 20px;
+      background-color: rgba(0, 0, 0, 0.45);
+      .errorLine { background: rgba(255,0,0,0.25); }
     }
+    
+    .CodeMirror-scroll { overflow: auto; }
+
+    @media all and (max-width: 800px) { .CodeMirror { font-size: 14px !important; } }
+
+  }
+
+  #blocks { bottom: 50px; }
+  #tools { bottom: 0px; }
+
+  #blocks, #tools {
+    left: 25%;
+  }
+
+  #chat {
+    background: rgba(0, 0, 0, 0.45);
+    position: absolute;
+    height: 100px;
+    width: 25%;
+    bottom: 0;
+
+    #messages {
+      color: magenta;
+      max-height: 80px;
+      overflow: auto;
+    }
+
+    #cmdbox {
+      position: absolute;
+      bottom: 0;
+      
+      input {
+        color: orange;
+        box-shadow: none;
+        height: 20px;
+        padding: 0;
+        margin: 0;
+        background: none;
+        border: none;
+        border-radius: 0;
+      }
+    }
+
   }
 
 }

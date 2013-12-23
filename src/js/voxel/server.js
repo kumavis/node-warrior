@@ -1,6 +1,7 @@
 // external dependencies
 var path = require('path')
 var extend = require('extend')
+var EventEmitter = require('events').EventEmitter
 // voxel depenencies
 var voxelServer = require('voxel-server')
 // internal dependencies
@@ -22,7 +23,6 @@ function Server(opts) {
 Server.prototype.connectClient = function(connection) {
   var self = this
   self.baseServer.connectClient(connection)
-  self.bindEvents(connection)
   console.log(connection.id, 'joined')
 }
 
@@ -38,6 +38,9 @@ Server.prototype.removeClient = function(connection) {
 
 Server.prototype.initialize = function(opts) {
   var self = this
+
+  // for debugging
+  if ('undefined' !== typeof window) window.server = self
 
   var defaults = {
     generateChunks: false,
@@ -78,6 +81,9 @@ Server.prototype.initialize = function(opts) {
   // sane defaults
   self.spatialTriggers = []
   
+  // expose emitter methods on client
+  extend(self,new EventEmitter())
+
   self.bindEvents()
 
   // add features
@@ -100,7 +106,15 @@ Server.prototype.bindEvents = function() {
     var chunk = game.getChunkAtPosition(pos)
     storeChunk(chunk)
   })  
-  // trigger world load
+  // trigger world load and emit 'ready' when done
+
+  var loadedChunks = 0
+  var expectedNumberOfInitialChunks = Math.pow(self.game.voxels.distance*2,3) // (2*2)^3=64 from [-2,-2,-2] --> [1,1,1]
+  self.on('chunkLoaded',function(chunk){
+    loadedChunks++
+    // TODO: ideally would unsub if this condition is true
+    if (loadedChunks === expectedNumberOfInitialChunks) self.emit('ready')
+  })
   game.voxels.requestMissingChunks(game.worldOrigin)
 
   // log chat
@@ -134,6 +148,8 @@ Server.prototype.bindEvents = function() {
         dims: chunk.dimensions
       }
       game.showChunk(chunk)
+      // report this chunk load as complete
+      self.emit('chunkLoaded',chunk)
     })
   }
 

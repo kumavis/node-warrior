@@ -96,6 +96,12 @@ Client.prototype.bindClientEvents = function() {
   var self = this
   var baseClient = self.baseClient
   
+  // when client needs new chunks
+  baseClient.on('missingChunk', function() {
+    // not sure when this happens
+    throw "missing chunk"
+  })
+  
   // When client is ready
   baseClient.on('loadComplete', function() {
     console.log('got initial chunks')
@@ -103,7 +109,7 @@ Client.prototype.bindClientEvents = function() {
     var game = self.game = baseClient.game
     game.appendTo(self.settings.container)
     // setup app-specific game particulars
-    self.setup(baseClient)
+    self.setup()
   })
 
   // handle error messages
@@ -141,6 +147,7 @@ Client.prototype.setup = function() {
     if (event.keyCode === 192) {
       // consume event
       event.stopPropagation()
+      event.preventDefault()
       // when open...
       if (self.codeEditor.isOpen) {
         // close the editor
@@ -220,7 +227,7 @@ Client.prototype.setup = function() {
       secondaryClick: isAltFire,
       client: self,
       setBlock: setBlock,
-      getBlock: game.getBlock,
+      getBlock: game.getBlock.bind(game),
       require: require,
       createSpatialTrigger: createSpatialTrigger,
       openModVox: self.modvox.openModVox,
