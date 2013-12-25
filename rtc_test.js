@@ -16,7 +16,8 @@ var rtcUtil = require('./src/js/util/rtc_utils.js')
 // If we are the client, a remote-host is specified
 if (document.location.hash) {
   var hostId = document.location.hash.slice(1)
-  rtcUtil.connectToHost(hostId,function(err,connection){
+  var host = rtcUtil.connectToHost(hostId)
+  host.on('connectionEstablished',function(connection){
     // debug
     connection.on('hi',function(){
       console.log('got hi')
@@ -36,6 +37,9 @@ if (document.location.hash) {
       playerTexture: './node_modules/minecraft-skin/viking.png',
     })
   })
+  host.on('connectionLost',function(){
+    console.error("connection lost")
+  })
 
 // if we are the host
 } else {
@@ -44,7 +48,13 @@ if (document.location.hash) {
     if (err) throw err
   
     var hostId = uuid()
-    var host = rtcUtil.onPeerConnection(hostId,function(err,connection){
+    var host = rtcUtil.RtcConnection(hostId)
+    // when an id has been established, set the hash location
+    host.on('open',function(hostId){
+      document.location.hash = hostId
+    })
+    // when a client has connected
+    host.on('connectionEstablished',function(connection){
       // debug
       connection.on('hi',function(){
         console.log('got hi')
@@ -58,10 +68,8 @@ if (document.location.hash) {
 
       server.connectClient(connection)
     })
-    // when an id has been established, set the hash location
-    host.on('open',function(hostId){
-      document.location.hash = hostId
-    })
+    // remove client on disconnect
+    host.on('connectionLost',server.removeClient.bind(server))
   })
 }
 

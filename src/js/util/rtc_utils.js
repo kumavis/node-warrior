@@ -6,48 +6,50 @@ var DuplexEmitter = require('duplex-emitter')
 const __ApiKey = '2pl4khtrswa8m2t9'
 
 module.exports = {
+  RtcConnection: RtcConnection,
   connectToHost: connectToHost,
-  onPeerConnection: onPeerConnection,
 }
 
 function connectToHost(hostId,callback) {
-  var dataConnection = dataConnectionForHost(hostId)
-  createEmitterOverConnection(dataConnection,callback)
-}
-
-function onPeerConnection(hostId,callback) {
-  var host = setupRtcConnection(hostId)
-  host.on('connection',function(dataConnection) {
-    createEmitterOverConnection(dataConnection,callback)
-  })
-  return host
-}
-
-function createEmitterOverConnection(dataConnection,callback) {
+  var rtc = RtcConnection()
+  var dataConnection = rtc.connect(hostId, {reliable: true})
   dataConnection.on('open',function() {
-    // data connection established, create a duplexEmitter
-    var stream = RtcDataStream(dataConnection.dataChannel)
-    var emitter = DuplexEmitter(stream)
-    // return duplexEmitter to consumer
-    callback(false,emitter)
+    dataConnectionHasOpened(rtc,dataConnection)
   })
+  return rtc
 }
 
-function setupRtcConnection(id) {
-  var peer = new Peer(id,{key: __ApiKey})
-  peer.on('error', function(err) { console.error(err) })
-  peer.on('open', function(id) { console.log('>> got id:',id) })
-  peer.on('message', function(data) { console.log('>> got message:',message) })
-  peer.on('connection', function(dataConnection) {
+function RtcConnection(id) {
+  var rtc = new Peer(id,{key: __ApiKey})
+  rtc.on('open', function(id) { console.log('>> opened, got id:',id) })
+  rtc.on('error', function(err) { console.log('>> had error:'); throw err })
+  rtc.on('close', function() { console.log('>> closed') })
+  rtc.on('connection', function(dataConnection) {
     console.log('>> got connection')
-    dataConnection.on('open',function() { console.log('>> connection opened') })
-    dataConnection.on('data',function(data) { console.log('>> got data:',data) })
+    // connection open
+    dataConnection.on('open',function() {
+      dataConnectionHasOpened(rtc,dataConnection)
+    })
   })
-  return peer
+  return rtc
+}
+
+function dataConnectionHasOpened(rtc,dataConnection){
+  console.log('>-> connection opened')
+  // data connection established, create a duplexEmitter
+  var stream = RtcDataStream(dataConnection.dataChannel)
+  var emitter = DuplexEmitter(stream)
+  dataConnection.on('data',function(data) { console.log('>-> got data:',data) })
+  dataConnection.on('error',function(err) { console.log('>-> connection had error:'); throw err })
+  dataConnection.on('close',function() {
+    console.log('>-> connection closed')
+    rtc.emit('connectionLost',emitter)
+  })
+  rtc.emit('connectionEstablished',emitter)
 }
 
 function dataConnectionForHost(hostId) {
-  var rtc = setupRtcConnection()
+  var rtc = RtcConnection()
   var dataConnection = rtc.connect(hostId, {reliable: true})
   return dataConnection
 }
