@@ -71,7 +71,13 @@ App.ApplicationController = Em.Controller.extend({
     })
     this.set('server',server)
     // connect to rtc with a random hash
-    this.connectRtc()
+    var rtc = this.connectRtc()
+    rtc.on('dc:open', function(channel, peerId) {
+      debugger
+      // var dataStream = rtcDataStream(channel)
+      // var connection = duplexEmitter(dataStream)
+      // applicationController.connect(connection)
+    })
     return server
   },
 
@@ -79,14 +85,14 @@ App.ApplicationController = Em.Controller.extend({
     hash = hash || uuid()
     // start webRTC server
     var rtcConnection = Rtc({
-      signaller: 'http://sig.rtc.io:50000',
-      hash: hash,
-      ns: 'dctest',
+      signalhost: 'http://sig.rtc.io:50000',
+      ns: 'node-warrior',
+      room: hash,
       data: true,
       debug: true,
-      setHashLocation: false,
     })
     this.set('rtcConnection',rtcConnection)
+    this.set('rtcConnectionHash',hash)
     return rtcConnection
   },
 

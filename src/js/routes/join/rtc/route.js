@@ -12,7 +12,7 @@ App.JoinRtcRoute = Em.Route.extend({
 
   setupController: function(controller, targetRtcHash) {
     var applicationController = this.controllerFor('application')
-    var existingRtcHash = applicationController.get('rtcConnection.hash')
+    var existingRtcHash = applicationController.get('rtcConnectionHash')
     // Self Hosted
     if (targetRtcHash === existingRtcHash) {
       var localNetwork = WalkieTalkieChannel()
@@ -26,7 +26,7 @@ App.JoinRtcRoute = Em.Route.extend({
           var args = [].slice.apply(args)
           var eventName = args.shift()
           var direction = isClient ? '-->' : '<--'
-          if (eventName !== 'update') {
+          if (eventName !== 'update' && eventName !== 'state') {
             console.log(direction,eventName,args)
           }
         }
@@ -40,6 +40,7 @@ App.JoinRtcRoute = Em.Route.extend({
     } else {
       var rtc = applicationController.connectRtc(targetRtcHash)
       rtc.on('dc:open', function(channel, peerId) {
+        debugger
         var dataStream = rtcDataStream(channel)
         var connection = duplexEmitter(dataStream)
         applicationController.connect(connection)

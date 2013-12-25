@@ -96,6 +96,12 @@ Client.prototype.bindClientEvents = function() {
   var self = this
   var baseClient = self.baseClient
   
+  // when client needs new chunks
+  baseClient.on('missingChunk', function() {
+    // not sure when this happens
+    throw "missing chunk"
+  })
+  
   // When client is ready
   baseClient.on('loadComplete', function() {
     console.log('got initial chunks')
