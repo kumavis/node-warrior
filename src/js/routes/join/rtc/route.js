@@ -1,7 +1,3 @@
-var rtcDataStream = require('rtc-data-stream')
-var duplexEmitter = require('duplex-emitter')
-var WalkieTalkieChannel = require('walkietalkie')
-
 App.JoinRtcRoute = Em.Route.extend({
 
   needs: ['application'],
@@ -11,23 +7,8 @@ App.JoinRtcRoute = Em.Route.extend({
   },
 
   setupController: function(controller, targetRtcHash) {
-    var applicationController = this.controllerFor('application')
-    var existingRtcHash = applicationController.get('rtcConnectionHash')
-    
-    // Self Hosted
-    if (targetRtcHash === existingRtcHash) {
-
-      var localNetwork = WalkieTalkieChannel()
-      var serverConnection = localNetwork.WalkieTalkie()
-      var clientConnection = localNetwork.WalkieTalkie()
-      applicationController.connect(serverConnection,clientConnection)
-    
-    // Remote Hosted
-    } else {
-
-      var rtc = applicationController.connectToRtcHost(targetRtcHash)
-    
-    }
+    var applicationController = this.needs('application')
+    applicationController.joinGame(targetRtcHash)
   },
   
 })
