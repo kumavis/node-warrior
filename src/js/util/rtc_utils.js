@@ -39,7 +39,7 @@ function dataConnectionHasOpened(rtc,dataConnection){
   // data connection established, create a duplexEmitter
   var stream = RtcDataStream(dataConnection.dataChannel)
   var emitter = DuplexEmitter(stream)
-  dataConnection.on('data',function(data) { console.log('>-> got data:',data) })
+  // dataConnection.on('data',function(data) { console.log('>-> got data:',data) })
   dataConnection.on('error',function(err) { console.log('>-> connection had error:'); throw err })
   dataConnection.on('close',function() {
     console.log('>-> connection closed')

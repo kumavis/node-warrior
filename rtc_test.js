@@ -12,23 +12,14 @@ var Client = require('./src/js/voxel/client.js')
 var Server = require('./src/js/voxel/server.js')
 var rtcUtil = require('./src/js/util/rtc_utils.js')
 
+// START TEST APP
 
 // If we are the client, a remote-host is specified
 if (document.location.hash) {
+
   var hostId = document.location.hash.slice(1)
   var host = rtcUtil.connectToHost(hostId)
   host.on('connectionEstablished',function(connection){
-    // debug
-    connection.on('hi',function(){
-      console.log('got hi')
-    })
-    connection.emit('hi')
-    // debug
-
-    // connection.on('chunk',function(){
-    //   console.log('got chunk:',arguments)
-    // })
-
     var client = new Client({
       isClient: true,
       connection: connection,
@@ -52,26 +43,16 @@ if (document.location.hash) {
     // when an id has been established, set the hash location
     host.on('open',function(hostId){
       document.location.hash = hostId
+      createAndConnectClientRtc(server,hostId)
     })
     // when a client has connected
-    host.on('connectionEstablished',function(connection){
-      // debug
-      connection.on('hi',function(){
-        console.log('got hi')
-      })
-      connection.emit('hi')
-      // debug
-
-      connection.on('created',function(){
-        console.log('got created')
-      })
-
-      server.connectClient(connection)
-    })
+    host.on('connectionEstablished',server.connectClient.bind(server))
     // remove client on disconnect
     host.on('connectionLost',server.removeClient.bind(server))
   })
 }
+
+// END TEST APP
 
 function startGame(callback) {
   // get user
@@ -125,6 +106,25 @@ function createAndConnectClient(server){
 
 }
 
+// create a client and connect it to the server
+function createAndConnectClientRtc(server,hostId){
+
+  var host = rtcUtil.connectToHost(hostId)
+  host.on('connectionEstablished',function(connection){
+    var client = new Client({
+      isClient: true,
+      connection: connection,
+      container: document.body,
+      texturePath: './node_modules/painterly-textures/textures/',
+      playerTexture: './node_modules/minecraft-skin/viking.png',
+    })
+  })
+  host.on('connectionLost',function(){
+    console.error("connection lost")
+  })
+
+}
+
 // get worlds from db
 function selectFirstWorld(user,voxelDb,callback){
   console.log('get worlds from db')
@@ -139,16 +139,12 @@ function selectFirstWorld(user,voxelDb,callback){
       })
     } else {
       console.log('worlds found, choosing first:',worlds[0].name)
-      var server = selectWorld(voxelDb,worlds[0])
+      var server = startGameServer(voxelDb,worlds[0].name)
       server.on('ready',function(){
         callback(false,server)
       })
     }
   })
-}
-
-function selectWorld(voxelDb,world){
-  return startGameServer(voxelDb,world.name)
 }
 
 // create game server

@@ -13,38 +13,20 @@ App.JoinRtcRoute = Em.Route.extend({
   setupController: function(controller, targetRtcHash) {
     var applicationController = this.controllerFor('application')
     var existingRtcHash = applicationController.get('rtcConnectionHash')
+    
     // Self Hosted
     if (targetRtcHash === existingRtcHash) {
-      var localNetwork = WalkieTalkieChannel()
-      var server = localNetwork.WalkieTalkie()
-      var client = localNetwork.WalkieTalkie()
-      
-      // ! Debug !
-      console.log('-- connection logging enabled, "update" squeltched --')
-      function logger(isClient){
-        return function(args){
-          var args = [].slice.apply(args)
-          var eventName = args.shift()
-          var direction = isClient ? '-->' : '<--'
-          if (eventName !== 'update' && eventName !== 'state') {
-            console.log(direction,eventName,args)
-          }
-        }
-      }
-      server.on('*',logger(false))
-      client.on('*',logger(true))
-      // ! Debug !
 
-      applicationController.connect(server,client)
+      var localNetwork = WalkieTalkieChannel()
+      var serverConnection = localNetwork.WalkieTalkie()
+      var clientConnection = localNetwork.WalkieTalkie()
+      applicationController.connect(serverConnection,clientConnection)
+    
     // Remote Hosted
     } else {
-      var rtc = applicationController.connectRtc(targetRtcHash)
-      rtc.on('dc:open', function(channel, peerId) {
-        debugger
-        var dataStream = rtcDataStream(channel)
-        var connection = duplexEmitter(dataStream)
-        applicationController.connect(connection)
-      })
+
+      var rtc = applicationController.connectToRtcHost(targetRtcHash)
+    
     }
   },
   

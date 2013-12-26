@@ -39,7 +39,8 @@ Server.prototype.removeClient = function(connection) {
 Server.prototype.initialize = function(opts) {
   var self = this
 
-  window.server = self
+  // for debugging
+  if ('undefined' !== typeof window) window.server = self
 
   var defaults = {
     generateChunks: false,

@@ -9,10 +9,8 @@ App.HostIndexController = Em.ArrayController.extend({
     launchWorld: function(world) {
       var self = this
       var applicationController = self.controllerFor('application')
-      var server = applicationController.startGameServer(world)
-      var rtcHash = applicationController.get('rtcConnectionHash')
-      server.on('ready',function() {
-        self.transitionToRoute('join.rtc',rtcHash)        
+      applicationController.startGameServer(world,function(hostId) {
+        self.transitionToRoute('join.rtc',hostId)    
       })
     },
 

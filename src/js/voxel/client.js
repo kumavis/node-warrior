@@ -109,7 +109,7 @@ Client.prototype.bindClientEvents = function() {
     var game = self.game = baseClient.game
     game.appendTo(self.settings.container)
     // setup app-specific game particulars
-    self.setup(baseClient)
+    self.setup()
   })
 
   // handle error messages
@@ -147,6 +147,7 @@ Client.prototype.setup = function() {
     if (event.keyCode === 192) {
       // consume event
       event.stopPropagation()
+      event.preventDefault()
       // when open...
       if (self.codeEditor.isOpen) {
         // close the editor

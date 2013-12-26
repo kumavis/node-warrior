@@ -8,7 +8,8 @@ var uuid = require('hat')
 // local dependencies
 var Client = require('../voxel/client.js')
 var Server = require('../voxel/server.js')
-var Rtc = require('rtc-quickconnect')
+var rtcUtil = require('../util/rtc_utils.js')
+
 
 App.ApplicationController = Em.Controller.extend({
 
@@ -48,52 +49,58 @@ App.ApplicationController = Em.Controller.extend({
   // the local rtcConnection, if any
   rtcConnection: null,
 
-  connect: function connect(connectionClient,connectionServer) {
+  // used for connecting locally, or to the lobby
+  connect: function connect(clientConnection,serverConnection) {
     var self = this
     // create the client
     Em.run.next(function(){
       var client = new Client({
-        connection: connectionClient,
+        connection: clientConnection,
         container: document.querySelector('#container'),
       })
       self.set('client',client)
-      if (connectionServer) self.get('server').connectClient(connectionServer)
+      if (serverConnection) self.get('server').connectClient(serverConnection)
     })
   },
 
-  startGameServer: function startGameServer(world) {
+  startGameServer: function startGameServer(world,callback) {
+    var self = this
     // get voxel db
-    var voxelDb = this.get('voxelDb')
+    var voxelDb = self.get('voxelDb')
     // create server
     var server = new Server({
       worldId: world.name,
       voxelDb: voxelDb,
     })
-    this.set('server',server)
-    // connect to rtc with a random hash
-    var rtc = this.connectRtc()
-    rtc.on('dc:open', function(channel, peerId) {
-      debugger
-      // var dataStream = rtcDataStream(channel)
-      // var connection = duplexEmitter(dataStream)
-      // applicationController.connect(connection)
+    self.set('server',server)
+    server.on('ready',function(){
+      var hostId = self.setupRtcHost()
+      self.set('rtcConnectionHash',hostId)
+      callback(hostId)
     })
-    return server
   },
 
-  connectRtc: function connectRtc(hash) {
-    hash = hash || uuid()
-    // start webRTC server
-    var rtcConnection = Rtc({
-      signalhost: 'http://sig.rtc.io:50000',
-      ns: 'node-warrior',
-      room: hash,
-      data: true,
-      debug: true,
-    })
-    this.set('rtcConnection',rtcConnection)
-    this.set('rtcConnectionHash',hash)
-    return rtcConnection
+  setupRtcHost: function setupRtcHost() {
+    var self = this
+    var hostId = uuid()
+    var host = rtcUtil.RtcConnection(hostId)
+    // when a client has connected
+    host.on('connectionEstablished',server.connectClient.bind(server))
+    // remove client on disconnect
+    host.on('connectionLost',server.removeClient.bind(server))
+    return hostId
   },
+
+  connectToRtcHost: function connectToRtcHost(hostId) {
+    var self = this
+    var host = rtcUtil.connectToHost(hostId)
+    host.on('connectionEstablished',self.connect.bind(self))
+    host.on('connectionLost',function(){
+      console.error("connection lost")
+    })
+    return host
+  },
+
+
 
 })
