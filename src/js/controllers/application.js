@@ -14,41 +14,9 @@ var RtcUtil = require('../util/rtc_utils.js')
 
 App.ApplicationController = Em.Controller.extend({
 
-  // whether to display the game or hide it
-  showGame: false,
-
-  // the current user
-  user: LevelUser({dbName: 'voxeljs', baseURL: document.domain }),
-
-  // the voxel database for the current user
-  voxelDb: Em.computed('user',function() {
-    var user = this.get('user')
-    if (user) return VoxelLevel(user.db)
-  }),
-
-  // get worlds from db asynchronously
-  getWorlds: function getWorlds(cb) {
-    var user = this.get('user')
-    var worldStream = user.db.sublevel('worlds').createValueStream({ valueEncoding: 'json' })
-    var sentError
-    worldStream.pipe(concat(function(worlds) {
-      if (!worlds) worlds = []
-      if (!sentError) cb(false, worlds)
-    }))
-    worldStream.on('error', function(err) {
-      sentError = true
-      cb(err)
-    })
-  },
-
-  // the current game client, if any
-  client: null,
-
-  // the current local game server, if any
-  server: null,
-
-  // the local rtcConnection, if any
-  rtcConnection: null,
+  //
+  // Public
+  //
 
   // join a game corresponding to an Id (remote or local)
   joinGame: function joinGame(targetHostId) {
@@ -80,20 +48,7 @@ App.ApplicationController = Em.Controller.extend({
     self.connectClientToServer(connection)
   },
 
-  // used for connecting locally, or to the lobby
-  connectClientToServer: function connectClientToServer(clientConnection,serverConnection) {
-    var self = this
-    // create the client
-    Em.run.next(function(){
-      var client = new Client({
-        connection: clientConnection,
-        container: document.querySelector('#container'),
-      })
-      self.set('client',client)
-      if (serverConnection) self.get('server').connectClient(serverConnection)
-    })
-  },
-
+  // start a game server hosting the given world
   startGameServer: function startGameServer(world,callback) {
     var self = this
     // get voxel db
@@ -108,6 +63,60 @@ App.ApplicationController = Em.Controller.extend({
       var hostId = self.setupRtcHost()
       self.set('rtcConnectionHash',hostId)
       callback(hostId)
+    })
+  },
+
+  // get worlds from db asynchronously
+  getWorlds: function getWorlds(callback) {
+    var user = this.get('user')
+    var worldStream = user.db.sublevel('worlds').createValueStream({ valueEncoding: 'json' })
+    var sentError
+    worldStream.pipe(concat(function(worlds) {
+      if (!worlds) worlds = []
+      if (!sentError) callback(false, worlds)
+    }))
+    worldStream.on('error', function(err) {
+      sentError = true
+      callback(err)
+    })
+  },
+
+  //
+  // Private
+  //
+
+  // whether to display the game or hide it
+  showGame: false,
+
+  // the current user
+  user: LevelUser({dbName: 'voxeljs', baseURL: document.domain }),
+
+  // the voxel database for the current user
+  voxelDb: Em.computed('user',function() {
+    var user = this.get('user')
+    if (user) return VoxelLevel(user.db)
+  }),
+
+  // the current game client, if any
+  client: null,
+
+  // the current local game server, if any
+  server: null,
+
+  // the local rtcConnection, if any
+  rtcConnection: null,
+
+  // used for connecting locally, or to the lobby
+  connectClientToServer: function connectClientToServer(clientConnection,serverConnection) {
+    var self = this
+    // create the client
+    Em.run.next(function(){
+      var client = new Client({
+        connection: clientConnection,
+        container: document.querySelector('#container'),
+      })
+      self.set('client',client)
+      if (serverConnection) self.get('server').connectClient(serverConnection)
     })
   },
 
@@ -131,7 +140,5 @@ App.ApplicationController = Em.Controller.extend({
     })
     return host
   },
-
-
 
 })

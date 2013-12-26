@@ -3,7 +3,8 @@ App.JoinLobbyRoute = Em.Route.extend({
   needs: ['application'],
 
   setupController: function() {
-    var applicationController = this.controllerFor('application')
+    var self = this
+    var applicationController = self.controllerFor('application')
     applicationController.joinLobby()
   },
 

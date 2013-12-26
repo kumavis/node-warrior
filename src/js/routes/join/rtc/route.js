@@ -7,7 +7,8 @@ App.JoinRtcRoute = Em.Route.extend({
   },
 
   setupController: function(controller, targetRtcHash) {
-    var applicationController = this.needs('application')
+    var self = this
+    var applicationController = self.controllerFor('application')
     applicationController.joinGame(targetRtcHash)
   },
   
