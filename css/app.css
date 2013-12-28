@@ -1,0 +1,1505 @@
+/**
+ * ==================================
+ * Ratchet v1.0.2
+ * Licensed under The MIT License
+ * http://opensource.org/licenses/MIT
+ * ==================================
+ */
+/* Hard reset
+-------------------------------------------------- */
+html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, section, summary, time, audio, video {
+  padding: 0;
+  margin: 0;
+  border: 0; }
+
+/* Prevents iOS text size adjust after orientation change, without disabling (Thanks to @necolas) */
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%; }
+
+/* Base styles
+-------------------------------------------------- */
+body {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  font: 14px/1.25 "Helvetica Neue", sans-serif;
+  color: #222222;
+  background-color: white; }
+
+/* Universal link styling */
+a {
+  color: #0882f0;
+  text-decoration: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  /* Removes the dark touch outlines on links */ }
+
+/* Wrapper to be used around all content not in .bar-title and .bar-tab */
+.content {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+  background-color: white;
+  -webkit-transition-property: top, bottom;
+  transition-property: top, bottom;
+  -webkit-transition-duration: 0.2s, 0.2s;
+  transition-duration: 0.2s, 0.2s;
+  -webkit-transition-timing-function: linear, linear;
+  transition-timing-function: linear, linear;
+  -webkit-overflow-scrolling: touch; }
+
+/* Hack to force all relatively and absolutely positioned elements still render while scrolling
+   Note: This is a bug for "-webkit-overflow-scrolling: touch" */
+.content > * {
+  -webkit-transform: translateZ(0px);
+  transform: translateZ(0px); }
+
+/* Utility wrapper to pad in components like forms, block buttons and segmented-controllers so they're not full-bleed */
+.content-padded {
+  padding: 10px; }
+
+/* Pad top/bottom of content so it doesn't hide behind .bar-title and .bar-tab.
+   Note: For these to work, content must come after both bars in the markup */
+.bar-title ~ .content {
+  top: 44px; }
+
+.bar-tab ~ .content {
+  bottom: 51px; }
+
+.bar-header-secondary ~ .content {
+  top: 88px; }
+
+/* General bar styles
+-------------------------------------------------- */
+[class*="bar-"] {
+  position: fixed;
+  right: 0;
+  left: 0;
+  z-index: 10;
+  height: 44px;
+  padding: 5px;
+  box-sizing: border-box; }
+
+/* Modifier class to dock any bar below .bar-title */
+.bar-header-secondary {
+  top: 45px; }
+
+/* Modifier class to dock any bar to bottom of viewport */
+.bar-footer {
+  bottom: 0; }
+
+/* Generic bar for wrapping buttons, segmented controllers, etc. */
+.bar-standard {
+  background-color: #f2f2f2;
+  background-image: -webkit-linear-gradient(top, #f2f2f2 0, #e5e5e5 100%);
+  background-image: linear-gradient(to bottom, #f2f2f2 0, #e5e5e5 100%);
+  border-bottom: 1px solid #aaaaaa;
+  box-shadow: inset 0 1px 1px -1px white; }
+
+/* Flip border position to top for footer bars */
+.bar-footer.bar-standard, .bar-footer-secondary.bar-standard {
+  border-top: 1px solid #aaaaaa;
+  border-bottom-width: 0; }
+
+/* Title bar
+-------------------------------------------------- */
+/* Bar docked to top of viewport for showing page title and actions */
+.bar-title {
+  top: 0;
+  display: -webkit-box;
+  display: box;
+  background-color: #1eb0e9;
+  background-image: -webkit-linear-gradient(top, #1eb0e9 0, #109adc 100%);
+  background-image: linear-gradient(to bottom, #1eb0e9 0, #109adc 100%);
+  border-bottom: 1px solid #0e5895;
+  box-shadow: inset 0 1px 1px -1px rgba(255, 255, 255, 0.8);
+  -webkit-box-orient: horizontal;
+  box-orient: horizontal; }
+
+/* Centered text in the .bar-title */
+.bar-title .title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 44px;
+  color: white;
+  text-align: center;
+  text-shadow: 0 -1px rgba(0, 0, 0, 0.5);
+  white-space: nowrap; }
+
+.bar-title > a:not([class*="button"]) {
+  display: block;
+  width: 100%;
+  height: 100%; }
+
+/* Retain specified title color */
+.bar-title .title a {
+  color: inherit; }
+
+/* Tab bar
+-------------------------------------------------- */
+/* Bar docked to bottom used for primary app navigation */
+.bar-tab {
+  bottom: 0;
+  height: 50px;
+  padding: 0;
+  background-color: #393939;
+  background-image: -webkit-linear-gradient(top, #393939 0, #2b2b2b 100%);
+  background-image: linear-gradient(to bottom, #393939 0, #2b2b2b 100%);
+  border-top: 1px solid black;
+  border-bottom-width: 0;
+  box-shadow: inset 0 1px 1px -1px rgba(255, 255, 255, 0.6); }
+
+/* Wrapper for individual tab */
+.tab-inner {
+  display: -webkit-box;
+  display: box;
+  height: 100%;
+  list-style: none;
+  -webkit-box-orient: horizontal;
+  box-orient: horizontal; }
+
+/* Navigational tab */
+.tab-item {
+  height: 100%;
+  padding-top: 9px;
+  text-align: center;
+  box-sizing: border-box;
+  -webkit-box-flex: 1;
+  box-flex: 1; }
+
+/* Active state for tab */
+.tab-item.active {
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5); }
+
+/* Icon for tab  */
+.tab-icon {
+  display: block;
+  height: 18px;
+  margin: 0 auto; }
+
+/* Label for tab */
+.tab-label {
+  margin-top: 1px;
+  font-size: 10px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.3); }
+
+/* Buttons in title bars
+-------------------------------------------------- */
+/* Generic style for all buttons in .bar-title */
+.bar-title [class*="button"] {
+  position: relative;
+  z-index: 10;
+  /* Places buttons over full width title */
+  font-size: 12px;
+  line-height: 23px;
+  color: white;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+  background-color: #1eb0e9;
+  background-image: -webkit-linear-gradient(top, #1eb0e9 0, #0984c6 100%);
+  background-image: linear-gradient(to bottom, #1eb0e9 0, #0984c6 100%);
+  border: 1px solid #0e5895;
+  box-shadow: 0 1px rgba(255, 255, 255, 0.25);
+  -webkit-box-flex: 0;
+  box-flex: 0; }
+
+/* Hacky way to right align buttons outside of flex-box system
+   Note: is only absolutely positioned button, would be better if flex-box had an "align right" option */
+.bar-title .title + [class*="button"]:last-child, .bar-title .button + [class*="button"]:last-child, .bar-title [class*="button"].pull-right {
+  position: absolute;
+  top: 5px;
+  right: 5px; }
+
+/* Override standard button active states */
+.bar-title .button:active {
+  color: white;
+  background-color: #0876b1; }
+
+/* Directional buttons in title bars (thanks to @GregorAdams for solution - http://cssnerd.com/2011/11/30/the-best-pure-css3-ios-style-arrow-back-button/)
+-------------------------------------------------- */
+/* Add relative positioning so :before content is positioned properly */
+.bar-title .button-prev, .bar-title .button-next {
+  position: relative; }
+
+/* Prev/next button base styles */
+.bar-title .button-prev {
+  margin-left: 7px;
+  /* Push over to make room for :before content */
+  border-left: 0;
+  border-bottom-left-radius: 10px 15px;
+  border-top-left-radius: 10px 15px; }
+
+.bar-title .button-next {
+  margin-right: 7px;
+  /* Push over to make room for :before content */
+  border-right: 0;
+  border-top-right-radius: 10px 15px;
+  border-bottom-right-radius: 10px 15px; }
+
+/* Pointed part of directional button */
+.bar-title .button-prev:before, .bar-title .button-next:before {
+  position: absolute;
+  top: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 30px 100px 2px 40px/2px 40px 30px 100px;
+  content: '';
+  box-shadow: inset 1px 0 #0e5895, inset 0 1px #0e5895;
+  -webkit-mask-image: -webkit-gradient(linear, left top, right bottom, from(#000000), color-stop(0.33, #000000), color-stop(0.5, transparent), to(transparent));
+  mask-image: gradient(linear, left top, right bottom, from(#000000), color-stop(0.33, #000000), color-stop(0.5, transparent), to(transparent)); }
+
+.bar-title .button-prev:before {
+  left: -5px;
+  background-image: -webkit-gradient(linear, left bottom, right top, from(#0984c6), to(#1eb0e9));
+  background-image: gradient(linear, left bottom, right top, from(#0984c6), to(#1eb0e9));
+  border-left: 1.5px solid rgba(255, 255, 255, 0.25);
+  -webkit-transform: rotate(-45deg) skew(-10deg, -10deg);
+  transform: rotate(-45deg) skew(-10deg, -10deg); }
+
+.bar-title .button-next:before {
+  right: -5px;
+  background-image: -webkit-gradient(linear, left bottom, right top, from(#1eb0e9), to(#0984c6));
+  background-image: gradient(linear, left bottom, right top, from(#1eb0e9), to(#0984c6));
+  border-top: 1.5px solid rgba(255, 255, 255, 0.25);
+  -webkit-transform: rotate(135deg) skew(-10deg, -10deg);
+  transform: rotate(135deg) skew(-10deg, -10deg); }
+
+/* Active states for the directional buttons */
+.bar-title .button-prev:active, .bar-title .button-next:active, .bar-title .button-prev:active:before, .bar-title .button-next:active:before {
+  color: white;
+  background-color: #0876b1;
+  background-image: none; }
+
+.bar-title .button-prev:active:before, .bar-title .button-next:active:before {
+  content: ''; }
+
+.bar-title .button-prev:active:before {
+  box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.2); }
+
+.bar-title .button-next:active:before {
+  box-shadow: inset 0 -3px 3px rgba(0, 0, 0, 0.2); }
+
+/* Block buttons in any bar
+-------------------------------------------------- */
+/* Add proper padding and replace buttons normal dropshadow with a shine from bar */
+[class*="bar"] .button-block {
+  padding: 7px 0;
+  margin-bottom: 0;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 1px rgba(255, 255, 255, 0.8); }
+
+/* Override standard padding changes for .button-blocks */
+[class*="bar"] .button-block:active {
+  padding: 7px 0; }
+
+/* Segmented controller in any bar
+-------------------------------------------------- */
+/* Remove standard segmented bottom margin */
+[class*="bar-"] .segmented-controller {
+  margin-bottom: 0; }
+
+/* Add margins between segmented controllers and buttons */
+[class*="bar-"] .segmented-controller + [class*="button"], [class*="bar-"] [class*="button"] + .segmented-controller {
+  margin-left: 5px; }
+
+/* Segmented controller in a title bar
+-------------------------------------------------- */
+.bar-title .segmented-controller {
+  line-height: 18px;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+  background-color: #1eb0e9;
+  background-image: -webkit-linear-gradient(top, #1eb0e9 0, #0984c6 100%);
+  background-image: linear-gradient(to bottom, #1eb0e9 0, #0984c6 100%);
+  border: 1px solid #0e5895;
+  border-radius: 3px;
+  box-shadow: 0 1px rgba(255, 255, 255, 0.25);
+  -webkit-box-flex: 1;
+  box-flex: 1; }
+
+/* Set color for tab border and highlight */
+.bar-title .segmented-controller li {
+  border-left: 1px solid #0e5895;
+  box-shadow: inset 1px 0 rgba(255, 255, 255, 0.25); }
+
+/* Remove inset shadow from first tab or one to the right of the active tab  */
+.bar-title .segmented-controller .active + li, .bar-title .segmented-controller li:first-child {
+  box-shadow: none; }
+
+/* Remove left-hand border from first tab */
+.bar-title .segmented-controller li:first-child {
+  border-left-width: 0; }
+
+/* Depressed state (active) */
+.bar-title .segmented-controller li.active {
+  background-color: #0082c4;
+  box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.3); }
+
+/* Set color of links to white */
+.bar-title .segmented-controller li > a {
+  color: white; }
+
+/* Search forms in standard bar
+-------------------------------------------------- */
+/* Position/size search bar within the bar */
+.bar-standard input[type=search] {
+  height: 32px;
+  margin: 0; }
+
+/* Lists
+-------------------------------------------------- */
+/* Remove usual bullet styles from list */
+.list {
+  margin-bottom: 10px;
+  list-style: none;
+  background-color: white; }
+
+/* Pad each list item and add dividers */
+.list li {
+  position: relative;
+  padding: 11px 60px 11px 10px;
+  /* Given extra right padding to accomodate counts, chevrons or buttons */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
+
+/* Give top border to first list items */
+.list li:first-child {
+  border-top: 1px solid rgba(0, 0, 0, 0.1); }
+
+/* If a list of links, make sure the child <a> takes up full list item tap area (want to avoid selecting child buttons though) */
+.list li > a:not([class*="button"]) {
+  position: relative;
+  display: block;
+  padding: inherit;
+  margin: -11px -60px -11px -10px;
+  color: inherit; }
+
+/* Inset list
+-------------------------------------------------- */
+.list.inset {
+  width: auto;
+  margin-right: 10px;
+  margin-left: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  box-sizing: border-box; }
+
+/* Remove border from first/last standard list items to avoid double border at top/bottom of lists */
+.list.inset li:first-child {
+  border-top-width: 0; }
+
+.list.inset li:last-child {
+  border-bottom-width: 0; }
+
+/* List dividers
+-------------------------------------------------- */
+.list .list-divider {
+  position: relative;
+  top: -1px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 18px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  background-color: #f8f8f8;
+  background-image: -webkit-linear-gradient(top, #f8f8f8 0, #eeeeee 100%);
+  background-image: linear-gradient(to bottom, #f8f8f8 0, #eeeeee 100%);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4); }
+
+/* Rounding first divider on inset lists and remove border on the top */
+.list.inset .list-divider:first-child {
+  top: 0;
+  border-top-width: 0;
+  border-radius: 6px 6px 0 0; }
+
+/* Rounding last divider on inset lists */
+.list.inset .list-divider:last-child {
+  border-radius: 0 0 6px 6px; }
+
+/* Right-aligned subcontent in lists (chevrons, buttons, counts and toggles)
+-------------------------------------------------- */
+.list .chevron, .list [class*="button"], .list [class*="count"], .list .toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px; }
+
+/* Position chevrons/counts vertically centered on the right in list items */
+.list .chevron, .list [class*="count"] {
+  margin-top: -10px;
+  /* Half height of chevron */ }
+
+/* Push count over if there's a sibling chevron */
+.list .chevron + [class*="count"] {
+  right: 30px; }
+
+/* Position buttons vertically centered on the right in list items */
+.list [class*="button"] {
+  left: auto;
+  margin-top: -14px;
+  /* Half height of button */ }
+
+.list .toggle {
+  margin-top: -15px;
+  /* Half height of toggle */ }
+
+/* Forms
+-------------------------------------------------- */
+/* Force form elements to inherit font styles */
+input, textarea, button, select {
+  font-family: inherit;
+  font-size: inherit; }
+
+/* Stretch inputs/textareas to full width and add height to maintain a consistent baseline */
+select, textarea, input[type="text"], input[type=search], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="tel"], input[type="color"], .input-group {
+  width: 100%;
+  height: 40px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.2), inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  outline: none; }
+
+/* Fully round search input */
+input[type=search] {
+  height: 34px;
+  font-size: 14px;
+  border-radius: 30px; }
+
+/* Allow text area's height to grow larger than a normal input */
+textarea {
+  height: auto; }
+
+/* Style select button to look like part of the Ratchet's style */
+select {
+  height: auto;
+  font-size: 14px;
+  background-color: #f8f8f8;
+  background-image: -webkit-linear-gradient(top, #f8f8f8 0%, #d4d4d4 100%);
+  background-image: linear-gradient(to bottom, #f8f8f8 0%, #d4d4d4 100%);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1); }
+
+/* Input groups (cluster multiple inputs together into a single group)
+-------------------------------------------------- */
+/* Reset from initial form setup styles */
+.input-group {
+  width: auto;
+  height: auto;
+  padding: 0; }
+
+/* Remove spacing, borders, shadows and rounding since it all belongs on the .input-group not the input */
+.input-group input {
+  margin-bottom: 0;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  box-shadow: none; }
+
+/* Remove bottom border on last input to avoid double bottom border */
+.input-group input:last-child {
+  border-bottom-width: 0; }
+
+/* Input groups with labels
+-------------------------------------------------- */
+/* To use labels with input groups, wrap a label and an input in an .input-row */
+.input-row {
+  overflow: hidden;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2); }
+
+/* Remove bottom border on last input-row to avoid double bottom border */
+.input-row:last-child {
+  border-bottom-width: 0; }
+
+/* Labels get floated left with a set percentage width */
+.input-row label {
+  float: left;
+  width: 25%;
+  padding: 11px 10px 9px 13px;
+  /* Optimizing the baseline for mobile. */
+  font-weight: bold; }
+
+/* Actual inputs float to right of labels and also have a set percentage */
+.input-row label + input {
+  float: right;
+  width: 65%;
+  padding-left: 0;
+  margin-bottom: 0;
+  border-bottom: 0; }
+
+/* General button styles
+-------------------------------------------------- */
+[class*="button"] {
+  position: relative;
+  display: inline-block;
+  padding: 4px 12px;
+  margin: 0;
+  font-weight: bold;
+  line-height: 18px;
+  color: #333333;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  vertical-align: top;
+  cursor: pointer;
+  background-color: #f8f8f8;
+  background-image: -webkit-linear-gradient(top, #f8f8f8 0, #d4d4d4 100%);
+  background-image: linear-gradient(to bottom, #f8f8f8 0, #d4d4d4 100%);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 1px 2px rgba(0, 0, 0, 0.05); }
+
+/* Active */
+[class*="button"]:active {
+  padding-top: 5px;
+  padding-bottom: 3px;
+  color: #333333;
+  background-color: #cccccc;
+  background-image: none;
+  box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.2); }
+
+/* Button modifiers
+-------------------------------------------------- */
+/* Overriding styles for buttons with modifiers  */
+.button-main, .button-positive, .button-negative {
+  color: white;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3); }
+
+/* Main button */
+.button-main {
+  background-color: #1eafe7;
+  background-image: -webkit-linear-gradient(top, #1eafe7 0, #1a97c8 100%);
+  background-image: linear-gradient(to bottom, #1eafe7 0, #1a97c8 100%);
+  border: 1px solid #117aaa; }
+
+/* Positive button  */
+.button-positive {
+  background-color: #34ba15;
+  background-image: -webkit-linear-gradient(top, #34ba15 0, #2da012 100%);
+  background-image: linear-gradient(to bottom, #34ba15 0, #2da012 100%);
+  border: 1px solid #278f0f; }
+
+/* Negative button  */
+.button-negative {
+  background-color: #e71e1e;
+  background-image: -webkit-linear-gradient(top, #e71e1e 0, #c71a1a 100%);
+  background-image: linear-gradient(to bottom, #e71e1e 0, #c71a1a 100%);
+  border: 1px solid #b51a1a; }
+
+/* Active state for buttons with modifiers */
+.button-main:active, .button-positive:active, .button-negative:active {
+  color: white; }
+
+.button-main:active {
+  background-color: #0876b1; }
+
+.button-positive:active {
+  background-color: #298f11; }
+
+.button-negative:active {
+  background-color: #b21a1a; }
+
+/* Block level buttons (full width buttons) */
+.button-block {
+  display: block;
+  padding: 11px 0 13px;
+  margin-bottom: 10px;
+  font-size: 16px; }
+
+/* Active state for block level buttons */
+.button-block:active {
+  padding: 12px 0; }
+
+/* Make button elements go full width when given .button-block class */
+button.button-block {
+  width: 100%; }
+
+/* Counts in buttons
+-------------------------------------------------- */
+/* Generic styles for all counts within buttons */
+[class*="button"] [class*="count"] {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  margin-right: -4px;
+  margin-left: 4px;
+  text-shadow: none;
+  background-color: rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px 1px -1px black, 0 1px 1px -1px white; }
+
+/* Position counts within block level buttons
+   Note: These are absolutely positioned so that text of button isn't "pushed" by count and always
+   stays at true center of button */
+.button-block [class*="count"] {
+  position: absolute;
+  right: 0;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  margin-right: 10px; }
+
+/* Chevrons
+-------------------------------------------------- */
+.chevron {
+  display: block;
+  height: 20px; }
+
+/* Base styles for both 1/2's of the chevron */
+.chevron:before, .chevron:after {
+  position: relative;
+  display: block;
+  width: 12px;
+  height: 4px;
+  background-color: #999999;
+  content: ''; }
+
+/* Position and rotate respective 1/2's of the chevron */
+.chevron:before {
+  top: 5px;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg); }
+
+.chevron:after {
+  top: 7px;
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg); }
+
+/* General count styles
+-------------------------------------------------- */
+[class*="count"] {
+  display: inline-block;
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 13px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 100px; }
+
+/* Count modifiers
+-------------------------------------------------- */
+/* Overriding styles for counts with modifiers  */
+.count-main, .count-positive, .count-negative {
+  color: white;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3); }
+
+/* Main count  */
+.count-main {
+  background-color: #1eafe7;
+  background-image: -webkit-linear-gradient(top, #1eafe7 0, #1a97c8 100%);
+  background-image: linear-gradient(to bottom, #1eafe7 0, #1a97c8 100%); }
+
+/* Positive count  */
+.count-positive {
+  background-color: #34ba15;
+  background-image: -webkit-linear-gradient(top, #34ba15 0, #2da012 100%);
+  background-image: linear-gradient(to bottom, #34ba15 0, #2da012 100%); }
+
+/* Negative count  */
+.count-negative {
+  background-color: #e71e1e;
+  background-image: -webkit-linear-gradient(top, #e71e1e 0, #c71a1a 100%);
+  background-image: linear-gradient(to bottom, #e71e1e 0, #c71a1a 100%); }
+
+/* Segmented controllers
+-------------------------------------------------- */
+.segmented-controller {
+  display: -webkit-box;
+  display: box;
+  margin-bottom: 10px;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: bold;
+  text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+  list-style: none;
+  background-color: #f8f8f8;
+  background-image: -webkit-linear-gradient(top, #f8f8f8 0, #d4d4d4 100%);
+  background-image: linear-gradient(to bottom, #f8f8f8 0, #d4d4d4 100%);
+  border: 1px solid #aaaaaa;
+  border-radius: 3px;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.5), 0 1px rgba(255, 255, 255, 0.8);
+  -webkit-box-orient: horizontal;
+  box-orient: horizontal; }
+
+/* Section within controller */
+.segmented-controller li {
+  overflow: hidden;
+  text-align: center;
+  white-space: nowrap;
+  border-left: 1px solid #aaaaaa;
+  box-shadow: inset 1px 0 rgba(255, 255, 255, 0.5);
+  -webkit-box-flex: 1;
+  box-flex: 1; }
+
+/* Link that fills each section */
+.segmented-controller li > a {
+  display: block;
+  padding: 8px 16px;
+  overflow: hidden;
+  line-height: 15px;
+  color: #333333;
+  text-overflow: ellipsis; }
+
+/* Remove border-left and shadow from first section */
+.segmented-controller li:first-child {
+  border-left-width: 0;
+  box-shadow: none; }
+
+/* Active segment of controller */
+.segmented-controller li.active {
+  background-color: #cccccc;
+  box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.3); }
+
+.segmented-controller-item {
+  display: none; }
+
+.segmented-controller-item.active {
+  display: block; }
+
+/* Popovers (to be used with popovers.js)
+-------------------------------------------------- */
+.popover {
+  position: fixed;
+  top: 55px;
+  left: 50%;
+  z-index: 20;
+  display: none;
+  width: 280px;
+  padding: 5px;
+  margin-left: -146px;
+  background-color: #555555;
+  background-image: -webkit-linear-gradient(top, #555555 5%, #555555 6%, #111111 30%);
+  background-image: linear-gradient(to bottom, #555555 5%, #555555 6%, #111111 30%);
+  border: 1px solid #111111;
+  border-radius: 6px;
+  opacity: 0;
+  box-shadow: inset 0 1px 1px -1px white, 0 3px 10px rgba(0, 0, 0, 0.3);
+  -webkit-transform: translate3d(0, -15px, 0);
+  transform: translate3d(0, -15px, 0);
+  -webkit-transition: -webkit-transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out; }
+
+/* Caret on top of popover using CSS triangles (thanks to @chriscoyier for solution) */
+.popover:before, .popover:after {
+  position: absolute;
+  left: 50%;
+  width: 0;
+  height: 0;
+  content: ''; }
+
+.popover:before {
+  top: -20px;
+  margin-left: -21px;
+  border-right: 21px solid transparent;
+  border-bottom: 21px solid #111111;
+  border-left: 21px solid transparent; }
+
+.popover:after {
+  top: -19px;
+  margin-left: -20px;
+  border-right: 20px solid transparent;
+  border-bottom: 20px solid #555555;
+  border-left: 20px solid transparent; }
+
+/* Wrapper for a title and buttons */
+.popover-header {
+  display: -webkit-box;
+  display: box;
+  height: 34px;
+  margin-bottom: 5px; }
+
+/* Centered title for popover */
+.popover-header .title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  margin: 15px 0;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 12px;
+  color: white;
+  text-align: center;
+  text-shadow: 0 -1px rgba(0, 0, 0, 0.5); }
+
+/* Generic style for all buttons in .popover-header */
+.popover-header [class*="button"] {
+  z-index: 25;
+  font-size: 12px;
+  line-height: 22px;
+  color: white;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+  background-color: #454545;
+  background-image: -webkit-linear-gradient(top, #454545 0, #353535 100%);
+  background-image: linear-gradient(to bottom, #454545 0, #353535 100%);
+  border: 1px solid #111111;
+  -webkit-box-flex: 0;
+  box-flex: 0; }
+
+/* Hacky way to right align buttons outside of flex-box system
+   Note: is only absolutely positioned button, would be better if flex-box had an "align right" option */
+.popover-header .title + [class*="button"]:last-child, .popover-header .button + [class*="button"]:last-child, .popover-header [class*="button"].pull-right {
+  position: absolute;
+  top: 5px;
+  right: 5px; }
+
+/* Active state for popover header buttons */
+.popover-header .button:active {
+  color: white;
+  background-color: #0876b1; }
+
+/* Popover animation
+-------------------------------------------------- */
+.popover.visible {
+  opacity: 1;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0); }
+
+/* Backdrop (used as invisible touch escape)
+-------------------------------------------------- */
+.backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10; }
+
+/* Block level buttons in popovers
+-------------------------------------------------- */
+/* Positioning and giving darker border to look sharp against dark popover */
+.popover .button-block {
+  margin-bottom: 5px;
+  border: 1px solid #111111; }
+
+/* Remove extra margin on bottom of last button */
+.popover .button-block:last-child {
+  margin-bottom: 0; }
+
+/* Lists in popovers
+-------------------------------------------------- */
+.popover .list {
+  width: auto;
+  max-height: 250px;
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-left: 0;
+  overflow: auto;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 3px;
+  -webkit-overflow-scrolling: touch; }
+
+/* Modals
+-------------------------------------------------- */
+.modal {
+  position: fixed;
+  top: 0;
+  opacity: 0;
+  z-index: 11;
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  background-color: white;
+  -webkit-transform: translate3d(0, 100%, 0);
+  transform: translate3d(0, 100%, 0);
+  -webkit-transition: -webkit-transform 0.25s ease-in-out, opacity 1ms 0.25s;
+  transition: transform 0.25s ease-in-out, opacity 1ms 0.25s; }
+
+/* Modal - When active
+-------------------------------------------------- */
+.modal.active {
+  opacity: 1;
+  height: 100%;
+  -webkit-transition: -webkit-transform 0.25s ease-in-out;
+  transition: transform 0.25 ease-in-out;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0); }
+
+/* Slider styles (to be used with sliders.js)
+-------------------------------------------------- */
+/* Width/height of slider */
+.slider, .slider > li {
+  width: 100%;
+  height: 200px; }
+
+/* Outer wrapper for slider */
+.slider {
+  overflow: hidden;
+  background-color: black; }
+
+/* Inner wrapper for slider (width of all slides together) */
+.slider > ul {
+  position: relative;
+  font-size: 0;
+  /* Remove spaces from inline-block children */
+  white-space: nowrap;
+  -webkit-transition: all 0 linear;
+  transition: all 0 linear; }
+
+/* Individual slide */
+.slider > ul > li {
+  display: inline-block;
+  vertical-align: top;
+  /* Ensure that li always aligns to top */
+  width: 100%;
+  height: 100%; }
+
+/* Required reset of font-size to same as standard body */
+.slider > ul > li > * {
+  font-size: 14px; }
+
+/* Toggle styles (to be used with toggles.js)
+-------------------------------------------------- */
+.toggle {
+  position: relative;
+  width: 75px;
+  height: 28px;
+  background-color: #eeeeee;
+  border: 1px solid #bbbbbb;
+  border-radius: 20px;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1); }
+
+/* Text indicating "on" or "off". Default is "off" */
+.toggle:before {
+  position: absolute;
+  right: 13px;
+  font-weight: bold;
+  line-height: 28px;
+  color: #777777;
+  text-shadow: 0 1px white;
+  text-transform: uppercase;
+  content: "Off"; }
+
+/* Sliding handle */
+.toggle-handle {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  background-color: white;
+  background-image: -webkit-linear-gradient(top, #ffffff 0, #f2f2f2 100%);
+  background-image: linear-gradient(to bottom, #ffffff 0, #f2f2f2 100%);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 100px;
+  -webkit-transition: -webkit-transform 0.1s ease-in-out, border 0.1s ease-in-out;
+  transition: transform 0.1s ease-in-out, border 0.1s ease-in-out; }
+
+/* Active state for toggle */
+.toggle.active {
+  background-color: #19a8e4;
+  background-image: -webkit-linear-gradient(top, #088cd4 0, #19a8e4 100%);
+  background-image: linear-gradient(to bottom, #088cd4 0, #19a8e4 100%);
+  border: 1px solid #096c9d;
+  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.25); }
+
+/* Active state for toggle handle */
+.toggle.active .toggle-handle {
+  border-color: #0a76ad;
+  -webkit-transform: translate3d(48px, 0, 0);
+  transform: translate3d(48px, 0, 0); }
+
+/* Change "off" to "on" for active state */
+.toggle.active:before {
+  right: auto;
+  left: 15px;
+  color: white;
+  text-shadow: 0 -1px rgba(0, 0, 0, 0.25);
+  content: "On"; }
+
+/* Push styles (to be used with push.js)
+-------------------------------------------------- */
+/* Fade animation */
+.content.fade {
+  left: 0;
+  opacity: 0;
+  -webkit-transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out; }
+
+.content.fade.in {
+  opacity: 1; }
+
+/* Slide animation */
+.content.slide {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-transition: -webkit-transform 0.25s ease-in-out;
+  transition: transform 0.25s ease-in-out; }
+
+.content.slide.left {
+  -webkit-transform: translate3d(-100%, 0, 0);
+  transform: translate3d(-100%, 0, 0); }
+
+.content.slide.right {
+  -webkit-transform: translate3d(100%, 0, 0);
+  transform: translate3d(100%, 0, 0); }
+
+/* BASICS */
+.CodeMirror {
+  /* Set height, width, borders, and global font properties here */
+  font-family: 'Source Code Pro', 'Monaco', 'Consolas', monospace;
+  line-height: 1.5em !important;
+  height: 100%;
+  font-size: 20px; }
+
+.CodeMirror-scroll {
+  /* Set scrolling behaviour here */
+  overflow: hidden; }
+
+/* PADDING */
+.CodeMirror-lines {
+  padding: 4px 0;
+  /* Vertical padding around content */ }
+
+.CodeMirror pre {
+  padding: 0 4px;
+  /* Horizontal padding of content */ }
+
+.CodeMirror-scrollbar-filler {
+  background-color: white;
+  /* The little square between H and V scrollbars */ }
+
+/* GUTTER */
+.CodeMirror-gutters {
+  border-right: 1px solid #dddddd;
+  background-color: #f7f7f7; }
+
+
+.CodeMirror-linenumber {
+  padding: 0 3px 0 5px;
+  min-width: 20px;
+  text-align: right;
+  color: #999999; }
+
+/* CURSOR */
+.CodeMirror div.CodeMirror-cursor {
+  border-left: 1px solid black; }
+
+/* Shown when moving in bi-directional text */
+.CodeMirror div.CodeMirror-secondarycursor {
+  border-left: 1px solid silver; }
+
+.CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+  width: auto;
+  border: 0;
+  background: transparent;
+  background: rgba(0, 200, 0, 0.4);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#6600c800, endColorstr=#4c00c800); }
+
+/* Kludge to turn off filter in ie9+, which also accepts rgba */
+.CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor:not(#nonsense_id) {
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false); }
+
+/* Can style cursor different in overwrite (non-insert) mode */
+
+/* DEFAULT THEME */
+.cm-s-default .cm-keyword {
+  color: #770088; }
+
+.cm-s-default .cm-atom {
+  color: #221199; }
+
+.cm-s-default .cm-number {
+  color: #116644; }
+
+.cm-s-default .cm-def {
+  color: blue; }
+
+.cm-s-default .cm-variable {
+  color: black; }
+
+.cm-s-default .cm-variable-2 {
+  color: #0055aa; }
+
+.cm-s-default .cm-variable-3 {
+  color: #008855; }
+
+.cm-s-default .cm-property {
+  color: black; }
+
+.cm-s-default .cm-operator {
+  color: black; }
+
+.cm-s-default .cm-comment {
+  color: #aa5500; }
+
+.cm-s-default .cm-string {
+  color: #aa1111; }
+
+.cm-s-default .cm-string-2 {
+  color: #ff5500; }
+
+.cm-s-default .cm-meta {
+  color: #555555; }
+
+.cm-s-default .cm-error {
+  color: red; }
+
+.cm-s-default .cm-qualifier {
+  color: #555555; }
+
+.cm-s-default .cm-builtin {
+  color: #3300aa; }
+
+.cm-s-default .cm-bracket {
+  color: #999977; }
+
+.cm-s-default .cm-tag {
+  color: #117700; }
+
+.cm-s-default .cm-attribute {
+  color: #0000cc; }
+
+.cm-s-default .cm-header {
+  color: blue; }
+
+.cm-s-default .cm-quote {
+  color: #009900; }
+
+.cm-s-default .cm-hr {
+  color: #999999; }
+
+.cm-s-default .cm-link {
+  color: #0000cc; }
+
+.cm-negative {
+  color: #dd4444; }
+
+.cm-positive {
+  color: #229922; }
+
+.cm-header, .cm-strong {
+  font-weight: bold; }
+
+.cm-em {
+  font-style: italic; }
+
+.cm-link {
+  text-decoration: underline; }
+
+.cm-invalidchar {
+  color: red; }
+
+div.CodeMirror span.CodeMirror-matchingbracket {
+  color: lime; }
+
+div.CodeMirror span.CodeMirror-nonmatchingbracket {
+  color: #ff2222; }
+
+/* STOP */
+/* The rest of this file contains styles related to the mechanics of
+   the editor. You probably shouldn't touch them. */
+.CodeMirror {
+  line-height: 1;
+  position: relative;
+  overflow: hidden; }
+
+.CodeMirror-scroll {
+  /* 30px is the magic margin used to hide the element's real scrollbars */
+  /* See overflow: hidden in .CodeMirror, and the paddings in .CodeMirror-sizer */
+  margin-bottom: -30px;
+  margin-right: -30px;
+  padding-bottom: 30px;
+  padding-right: 30px;
+  height: 100%;
+  outline: none;
+  /* Prevent dragging from highlighting the element */
+  position: relative; }
+
+.CodeMirror-sizer {
+  position: relative; }
+
+/* The fake, visible scrollbars. Used to force redraw during scrolling
+   before actuall scrolling happens, thus preventing shaking and
+   flickering artifacts. */
+.CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler {
+  position: absolute;
+  z-index: 6;
+  display: none; }
+
+.CodeMirror-vscrollbar {
+  right: 0;
+  top: 0;
+  overflow-x: hidden;
+  overflow-y: scroll; }
+
+.CodeMirror-hscrollbar {
+  bottom: 0;
+  left: 0;
+  overflow-y: hidden;
+  overflow-x: scroll; }
+
+.CodeMirror-scrollbar-filler {
+  right: 0;
+  bottom: 0;
+  z-index: 6; }
+
+.CodeMirror-gutters {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  padding-bottom: 30px;
+  z-index: 3; }
+
+.CodeMirror-gutter {
+  height: 100%;
+  display: inline-block;
+  /* Hack to make IE7 behave */
+  *zoom: 1;
+  *display: inline; }
+
+.CodeMirror-gutter-elt {
+  position: absolute;
+  cursor: default;
+  z-index: 4; }
+
+.CodeMirror-lines {
+  cursor: text; }
+
+.CodeMirror pre {
+  /* Reset some styles that the rest of the page might have set */
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+  border-width: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  margin: 0;
+  white-space: pre;
+  word-wrap: normal;
+  line-height: inherit;
+  color: inherit;
+  z-index: 2;
+  position: relative;
+  overflow: visible; }
+
+.CodeMirror-wrap pre {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: normal; }
+
+.CodeMirror-linebackground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 0; }
+
+.CodeMirror-linewidget {
+  position: relative;
+  z-index: 2;
+  overflow: auto; }
+
+.CodeMirror-widget {
+  display: inline-block; }
+
+.CodeMirror-wrap .CodeMirror-scroll {
+  overflow-x: hidden; }
+
+.CodeMirror-measure {
+  position: absolute;
+  width: 100%;
+  height: 0px;
+  overflow: hidden;
+  visibility: hidden; }
+
+.CodeMirror-measure pre {
+  position: static; }
+
+.CodeMirror div.CodeMirror-cursor {
+  position: absolute;
+  visibility: hidden;
+  border-right: none;
+  width: 0; }
+
+.CodeMirror-focused div.CodeMirror-cursor {
+  visibility: visible; }
+
+.CodeMirror-selected {
+  background: #d9d9d9; }
+
+.CodeMirror-focused .CodeMirror-selected {
+  background: #d7d4f0; }
+
+.cm-searching {
+  background: #ffffaa;
+  background: rgba(255, 255, 0, 0.4); }
+
+/* IE7 hack to prevent it from returning funny offsetTops on the spans */
+.CodeMirror span {
+  *vertical-align: text-bottom; }
+
+@media print {
+  /* Hide the cursor when printing */
+  .CodeMirror div.CodeMirror-cursor {
+    visibility: hidden; } }
+
+/* Based on Sublime Text's Monokai theme */
+.cm-s-monokai.CodeMirror {
+  background: #272822;
+  color: #f8f8f2; }
+
+.cm-s-monokai div.CodeMirror-selected {
+  background: #49483e !important; }
+
+.cm-s-monokai .CodeMirror-gutters {
+  background: #272822;
+  border-right: 0px; }
+
+.cm-s-monokai .CodeMirror-linenumber {
+  color: #d0d0d0; }
+
+.cm-s-monokai .CodeMirror-cursor {
+  border-left: 1px solid #f8f8f0 !important; }
+
+.cm-s-monokai span.cm-comment {
+  color: #ffeb8b; }
+
+.cm-s-monokai span.cm-atom {
+  color: #ae81ff; }
+
+.cm-s-monokai span.cm-number {
+  color: #ae81ff; }
+
+.cm-s-monokai span.cm-property, .cm-s-monokai span.cm-attribute {
+  color: #a6e22e; }
+
+.cm-s-monokai span.cm-keyword {
+  color: #f92672; }
+
+.cm-s-monokai span.cm-string {
+  color: #e6db74; }
+
+.cm-s-monokai span.cm-variable {
+  color: #a6e22e; }
+
+.cm-s-monokai span.cm-variable-2 {
+  color: #9effff; }
+
+.cm-s-monokai span.cm-def {
+  color: #fd971f; }
+
+.cm-s-monokai span.cm-error {
+  background: #f92672;
+  color: #f8f8f0; }
+
+.cm-s-monokai span.cm-bracket {
+  color: #f8f8f2; }
+
+.cm-s-monokai span.cm-tag {
+  color: #f92672; }
+
+.cm-s-monokai span.cm-link {
+  color: #ae81ff; }
+
+.cm-s-monokai .CodeMirror-activeline-background {
+  background: #373831 !important; }
+
+.cm-s-monokai .CodeMirror-matchingbracket {
+  text-decoration: underline;
+  color: white !important; }
+
+body {
+  font-family: Monospace;
+  font-size: 12px;
+  background-color: #f0f0f0;
+  margin: 0px;
+  overflow: hidden; }
+
+input, input:focus {
+  outline: none; }
+
+.hidden {
+  display: none; }
+
+#stats {
+  bottom: 0px;
+  right: 0px; }
+
+#gameContainer #container {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none; }
+#gameContainer #crosshair {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin: -2px 0 0 -2px;
+  width: 4px;
+  height: 4px;
+  background-color: #dd0000;
+  opacity: 0.5; }
+#gameContainer .errorMessage {
+  text-align: center;
+  width: 200px;
+  margin: 20px auto; }
+#gameContainer #jseditor {
+  position: absolute;
+  width: 100%;
+  bottom: 100px;
+  top: 0%;
+  border-bottom: solid 1px; }
+  #gameContainer #jseditor .left, #gameContainer #jseditor .right {
+    height: 100%;
+    overflow: visible;
+    display: block;
+    float: left;
+    position: relative;
+    width: 50%; }
+  #gameContainer #jseditor .right {
+    background: #eeeeee; }
+  #gameContainer #jseditor .CodeMirror {
+    font-size: 20px;
+    background-color: rgba(0, 0, 0, 0.45); }
+    #gameContainer #jseditor .CodeMirror .errorLine {
+      background: rgba(255, 0, 0, 0.25); }
+  #gameContainer #jseditor .CodeMirror-scroll {
+    overflow: auto; }
+  @media all and (max-width: 800px) {
+    #gameContainer #jseditor .CodeMirror {
+      font-size: 14px !important; } }
+#gameContainer #blocks {
+  bottom: 50px; }
+#gameContainer #tools {
+  bottom: 0px; }
+#gameContainer #blocks, #gameContainer #tools {
+  left: 25%; }
+#gameContainer #chat {
+  background: rgba(0, 0, 0, 0.45);
+  position: absolute;
+  height: 100px;
+  width: 25%;
+  bottom: 0; }
+  #gameContainer #chat #messages {
+    color: magenta;
+    max-height: 80px;
+    overflow: auto; }
+  #gameContainer #chat #cmdbox {
+    position: absolute;
+    bottom: 0; }
+    #gameContainer #chat #cmdbox input {
+      color: orange;
+      box-shadow: none;
+      height: 20px;
+      padding: 0;
+      margin: 0;
+      background: none;
+      border: none;
+      border-radius: 0; }
