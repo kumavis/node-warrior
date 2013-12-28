@@ -55,6 +55,7 @@
     "grunt-sass": "0.6.1",
     "grunt": "0.4.1",
     "grunt-ember-templates": "0.4.15",
-    "grunt-cli": "0.1.11"
+    "grunt-cli": "0.1.11",
+    "grunt-contrib-uglify": "~0.2.7"
   }
 }

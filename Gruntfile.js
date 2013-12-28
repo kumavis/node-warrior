@@ -74,14 +74,26 @@ module.exports = function(grunt) {
           handlebars: { path: './lib/js/handlebars.js', exports: 'Handlebars' },
         },
       },
-      app: {
+      dev_app: {
         files: {
           '<%= meta.build.js %>/app.js': ['./src/js/app.js'],
         },
       },
-      lib: {
+      prod_app: {
+        debug: false,
+        files: {
+          '<%= meta.build.js %>/app.premin.js': ['./src/js/app.js'],
+        },
+      },
+      dev_lib: {
         files: {
           '<%= meta.build.js %>/lib.js': ['./lib/js/lib.js'],
+        },
+      },
+      prod_lib: {
+        debug: false,
+        files: {
+          '<%= meta.build.js %>/lib.premin.js': ['./lib/js/lib.js'],
         },
       },
     },
@@ -131,6 +143,11 @@ module.exports = function(grunt) {
     //
     // Utility
     //
+
+    // clean build dir
+    clean: {
+      build: '<%= meta.tmp %>/*',
+    },
 
     // move files to build dir
     copy: {
@@ -198,9 +215,14 @@ module.exports = function(grunt) {
       },
     },
 
-    // clean build dir
-    clean: {
-      build: '<%= meta.tmp %>/*',
+    // minify build files
+    uglify: {
+      prod: {
+        files: {
+          '<%= meta.build.js %>/app.js': '<%= meta.build.js %>/app.premin.js',
+          '<%= meta.build.js %>/lib.js': '<%= meta.build.js %>/lib.premin.js',
+        },
+      },
     },
 
     //
@@ -225,10 +247,10 @@ module.exports = function(grunt) {
   //
 
   // Runtime Modifications
-  grunt.loadNpmTasks('grunt-config');
+  grunt.loadNpmTasks('grunt-config')
 
   // Build
-  grunt.loadNpmTasks('grunt-ember-templates');
+  grunt.loadNpmTasks('grunt-ember-templates')
   grunt.loadNpmTasks('grunt-browserify')
   grunt.loadNpmTasks('grunt-sass')
   grunt.loadNpmTasks('grunt-ejs')
@@ -240,6 +262,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy')
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-contrib-watch')
+  grunt.loadNpmTasks('grunt-contrib-uglify')
 
   // Lib Tasks
   grunt.loadTasks('./tasks')
@@ -252,16 +275,18 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['dev'])
 
   // Build Modes
-  grunt.registerTask('dev', ['build', 'servers','watch'])
-  grunt.registerTask('prod', ['build', 'servers','keepalive'])
+  grunt.registerTask('dev', ['build:dev', 'servers','watch'])
+  grunt.registerTask('prod', ['build:prod', 'servers','keepalive'])
 
   // Build
-  grunt.registerTask('build', ['clean', 'build:html', 'build:templates', 'build:img', 'build:css', 'build:js'])
+  grunt.registerTask('build:dev', ['clean', 'build:html', 'build:templates', 'build:img', 'build:css', 'build:dev:js'])
+  grunt.registerTask('build:prod', ['clean', 'build:html', 'build:templates', 'build:img', 'build:css', 'build:prod:js'])
   grunt.registerTask('build:html', ['ejs'])
-  grunt.registerTask('build:templates', ['emberTemplates']);
+  grunt.registerTask('build:templates', ['emberTemplates'])
   grunt.registerTask('build:img', ['copy:icons','copy:blocks','copy:avatars'])
   grunt.registerTask('build:css', ['copy:libcss','sass:build'])
-  grunt.registerTask('build:js', ['browserify:lib','browserify:app'])
+  grunt.registerTask('build:dev:js', ['browserify:dev_lib','browserify:dev_app'])
+  grunt.registerTask('build:prod:js', ['browserify:prod_lib','browserify:prod_app','uglify:prod'])
   
   // Servers
   grunt.registerTask('servers', ['chauffeur:dev'])
@@ -270,7 +295,7 @@ module.exports = function(grunt) {
   grunt.registerTask('lock', ['chauffeur:dev:lock'])
   grunt.registerTask('unlock', ['chauffeur:dev:unlock'])
 
-  // Launch voxel-server
+  // Launch dedicated voxel-server
   grunt.registerTask('host', ['launchServer','keepalive'])
 
 }
