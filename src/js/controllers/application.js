@@ -25,10 +25,16 @@ App.ApplicationController = Em.Controller.extend({
     var existingHostId = self.get('rtcConnectionHash')
     // Self Hosted, if the target id is the current id
     if (targetHostId === existingHostId) {
-      var localNetwork = WalkieTalkieChannel()
-      var serverConnection = localNetwork.WalkieTalkie()
-      var clientConnection = localNetwork.WalkieTalkie()
-      self.connectClientToServer(serverConnection,clientConnection)
+      // DIABLED b/c side-by-side perf is so bad
+        // var localNetwork = WalkieTalkieChannel()
+        // var serverConnection = localNetwork.WalkieTalkie()
+        // var clientConnection = localNetwork.WalkieTalkie()
+        // self.connectClientToServer(serverConnection,clientConnection)
+      // instead open a new window, after url change
+      Em.run.next(function(){
+        var gameLink = document.getElementById('gameContainer')
+        gameLink.innerText = 'Temporary: This is the server only. Open current URL in new window to join.'
+      })
     // Remote Hosted
     } else {
       self.connectToRtcHost(targetHostId)
