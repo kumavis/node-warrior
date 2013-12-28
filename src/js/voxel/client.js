@@ -66,18 +66,6 @@ Client.prototype.bindServerEvents = function() {
     console.log('got settings')
   })
 
-  // show a message in the chat window when a remote client joins
-  connection.on('join',function(user) {
-    var message = user + ' joined.'
-    self.chat.showMessage(message)
-  })
-
-  // show a message in the chat window when a remote client leaves
-  connection.on('leave',function(user) {
-    var message = user + ' left.'
-    self.chat.showMessage(message)
-  })
-
   self.spatialTriggers = []
   connection.on('spatialTrigger',function(spatialTrigger) {
     // deserialize handlers
@@ -135,6 +123,18 @@ Client.prototype.setup = function() {
     user: baseClient.name,
     element: document.getElementById('chat'),
     emitter: connection,
+  })
+
+  // show a message in the chat window when a remote client joins
+  connection.on('join',function(user) {
+    var message = user + ' joined.'
+    self.chat.showMessage(message)
+  })
+
+  // show a message in the chat window when a remote client leaves
+  connection.on('leave',function(user) {
+    var message = user + ' left.'
+    self.chat.showMessage(message)
   })
 
   // initialize code editor
