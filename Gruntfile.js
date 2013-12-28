@@ -264,14 +264,14 @@ module.exports = function(grunt) {
   grunt.registerTask('build:js', ['browserify:lib','browserify:app'])
   
   // Servers
-  grunt.registerTask('servers', ['host','chauffeur:dev'])
+  grunt.registerTask('servers', ['chauffeur:dev'])
   
   // Utility
   grunt.registerTask('lock', ['chauffeur:dev:lock'])
   grunt.registerTask('unlock', ['chauffeur:dev:unlock'])
 
   // Launch voxel-server
-  grunt.registerTask('host', ['launchServer'])
+  grunt.registerTask('host', ['launchServer','keepalive'])
 
 }
 

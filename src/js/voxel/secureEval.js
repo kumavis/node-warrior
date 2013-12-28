@@ -112,7 +112,7 @@ module.exports = function(userCode,self,environment) {
 
   } catch (error) {
     console.error('-- secureEval error --')
-    console.log(error.stack,code)
+    console.log(error,error.stack,code)
   }
 
   // return code output, if any

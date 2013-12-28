@@ -24,13 +24,12 @@ If you want to run your own for you and your friends:
 git clone https://github.com/kumavis/node-warrior.git
 cd node-warrior
 npm install
-cp -R example_world world/
 ```
 
-To launch the game server (port 8000) and web server (port 8002) run
+To launch the asset server (port 8002) run
 
 ```
-grunt
+npm start
 ```
 
 Grunt will now do some work for you and get the server running.
