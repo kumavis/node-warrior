@@ -13,9 +13,6 @@ If you get a `command not found` message, install the missing tool:
 * [Git](http://git-scm.com/)
 * [Node.js](http://nodejs.org/)
 
-Install [Grunt](http://gruntjs.com/) with 
-`npm install -g grunt-cli`
-
 
 ## Installation
 If you want to run your own for you and your friends:
