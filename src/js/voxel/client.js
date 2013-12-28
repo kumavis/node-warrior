@@ -34,7 +34,7 @@ Client.prototype.initialize = function(opts) {
 
   var defaults = {
     container: document.body,
-    texturePath: '/textures/',
+    texturePath: './textures/',
     playerTexture: 'player.png'
   }
   var settings = self.settings = extend({}, defaults, opts)
