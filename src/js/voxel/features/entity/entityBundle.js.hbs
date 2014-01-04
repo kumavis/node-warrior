@@ -1,0 +1,45 @@
+// setup message passing
+var uuid = "{{uuid}}"
+
+// listen for update message
+self.addEventListener("message",messageListener,false)
+
+// run the update function inside a error catcher
+function messageListener(event) {
+  try {
+    entityUpdate()
+  } catch(err) {
+    sendError(event.source,err)
+  }
+}
+
+// go into error state
+function sendError(source,err) {
+  var response = {name:"entityMessage",uuid:uuid,type:"error",value:(err.stack || err)}
+  source.postMessage(JSON.stringify(response),"*")
+}
+
+// entity api
+function setPosition(arrayVector) {
+  var response = {name:"entityMessage",uuid:uuid,type:"setPosition",value:arrayVector}
+  postMessage(JSON.stringify(response),"*")
+}
+function setRotation(arrayVector) {
+  var response = {name:"entityMessage",uuid:uuid,type:"setRotation",value:arrayVector}
+  postMessage(JSON.stringify(response),"*")
+}
+function move(arrayVector) {
+  var response = {name:"entityMessage",uuid:uuid,type:"move",value:arrayVector}
+  postMessage(JSON.stringify(response),"*")
+}
+function rotate(arrayVector) {
+  var response = {name:"entityMessage",uuid:uuid,type:"rotate",value:arrayVector}
+  postMessage(JSON.stringify(response),"*")
+}
+
+// user-provided update function
+function entityUpdate() {
+  // start user code
+  {{user_code}}
+  // end user code
+}

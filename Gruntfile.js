@@ -189,11 +189,11 @@ module.exports = function(grunt) {
     watch: {
       app: {
         files: ['<%= meta.src.js %>/**/*.js'],
-        tasks: ['lock', 'browserify:app', 'unlock'],
+        tasks: ['lock', 'browserify:dev_app', 'unlock'],
       },
       lib: {
         files: ['<%= meta.lib.js %>/**/*.js'],
-        tasks: ['lock', 'browserify:lib', 'unlock'],
+        tasks: ['lock', 'browserify:dev_lib', 'unlock'],
       },
       html: {
         files: ['<%= meta.src.base %>/index.ejs'],

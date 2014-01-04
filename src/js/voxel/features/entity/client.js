@@ -2,15 +2,17 @@ var hat = require('hat')
   , extend = require('extend')
   , skin = require('minecraft-skin')
 
+var __errorSkinTexture = 'error.png'
 
 module.exports = function(client) {
  
   // store entities and npcs on the client
+  // entity is any object with postion, direction, and an update loop
   client.entities = {}
   client.npcs = {}
 
   // register incomming entities
-  client.connection.on('npc',function(npcData) {
+  client.connection.on('entity',function(npcData) {
     // Update Entity
     if (npcData.uuid in client.entities) {
       _updateEntity(npcData)
@@ -23,10 +25,7 @@ module.exports = function(client) {
   // register for events when game is ready
   client.baseClient.on('loadComplete', function() {
 
-    // register for npc updates
-    client.connection.on('npc.update', _updateNpcState)
-
-    // on game loop, animate entity position and rotatio
+    // on game loop, animate entity position and rotation
     client.game.on('tick', function(delta) {
       var THREE = client.game.THREE
       var lerpPercent = Math.min(delta/100,1)
@@ -61,7 +60,7 @@ module.exports = function(client) {
     var pos = pos || [0,1,0]
       , rot = rot || [0,0,0]
     var npcData = {uuid: hat(), pos: pos, rot: rot, skinName: skinName}
-    client.connection.emit('npc',npcData)
+    client.connection.emit('entity',npcData)
     var npc = _addNpc(npcData)
     return npc
   }
@@ -70,7 +69,7 @@ module.exports = function(client) {
   function updateEntity(npcData) {
     if (!npcData.uuid) throw 'no uuid specified'
     if (!npcData.uuid in client.entities) throw 'no entity with specified uuid: '+npcData.uuid
-    client.connection.emit('npc',npcData)
+    client.connection.emit('entity',npcData)
     _updateEntity(npcData)
   }
 
@@ -122,8 +121,6 @@ module.exports = function(client) {
       npc: npc,
     })
     npcMesh.entity = newEntity
-    // remove extraneous info
-    delete newEntity.skinName
     // add npc to entity registry
     client.entities[uuid] = newEntity
     client.npcs[uuid] = npc
@@ -131,11 +128,20 @@ module.exports = function(client) {
     var pos = npc.pos = npcData.pos
     var rot = npc.rot = npcData.rot
     npcMesh.position.set(pos[0], pos[1], pos[2])
+    // if starting in error state, repaint npc as error
+    if (npcData.state === 'error') _entityEnteredErrorState(newEntity)
     return npc
   }
 
   function _updateEntity(npcData) {
-    var entity = client.entities[npcData.uuid]
+    var uuid = npcData.uuid
+    var entity = client.entities[uuid]
+    if (npcData.state && npcData.state === 'error' && entity.state !== 'error') _entityEnteredErrorState(entity)
+    if (npcData.state && npcData.state !== 'error' && entity.state === 'error') _entityLeftErrorState(entity)
+    // animate position and rotation, then remove their details so they are not set instantly
+    _updateNpcState(uuid,npcData)
+    delete npcData.position
+    delete npcData.rotation
     extend(entity,npcData)
   }
 
@@ -166,6 +172,21 @@ module.exports = function(client) {
     if (update.rotation) npc.rot = update.rotation
   }
    
+}
+
+function _entityEnteredErrorState(entity) {
+  var uuid = entity.uuid
+  console.log('entity errored:',uuid)
+  var npc = client.npcs[uuid]
+  npc.fetchImage(__errorSkinTexture)
+}
+
+function _entityLeftErrorState(entity) {
+  var uuid = entity.uuid
+  console.log('entity restored:',uuid)
+  var npc = client.npcs[uuid]
+  var entity = client.entities[uuid]
+  npc.fetchImage(entity.skinName)
 }
 
 // utility - scale a vector
