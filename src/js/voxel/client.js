@@ -40,10 +40,10 @@ Client.prototype.initialize = function(opts) {
   var settings = self.settings = extend({}, defaults, opts)
 
   // create the base game client
-  self.connection = settings.connection
   self.baseClient = createClient(settings)
 
   // bind events
+  self.connection = self.baseClient.connection
   self.bindServerEvents()
   self.bindClientEvents()
 

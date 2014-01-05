@@ -1,6 +1,5 @@
 var Peer = require('peerjs').Peer
 var RtcDataStream = require('rtc-data-stream')
-var DuplexEmitter = require('duplex-emitter')
 
 // constants
 const __ApiKey = '2pl4khtrswa8m2t9'
@@ -36,16 +35,15 @@ function RtcConnection(id) {
 
 function dataConnectionHasOpened(rtc,dataConnection){
   console.log('>-> connection opened')
-  // data connection established, create a duplexEmitter
-  var stream = RtcDataStream(dataConnection.dataChannel)
-  var emitter = DuplexEmitter(stream)
+  // data connection established, create a duplex stream
+  var duplexStream = RtcDataStream(dataConnection.dataChannel)
   // dataConnection.on('data',function(data) { console.log('>-> got data:',data) })
   dataConnection.on('error',function(err) { console.log('>-> connection had error:'); throw err })
   dataConnection.on('close',function() {
     console.log('>-> connection closed')
-    rtc.emit('connectionLost',emitter)
+    rtc.emit('connectionLost',duplexStream)
   })
-  rtc.emit('connectionEstablished',emitter)
+  rtc.emit('connectionEstablished',duplexStream)
 }
 
 function dataConnectionForHost(hostId) {

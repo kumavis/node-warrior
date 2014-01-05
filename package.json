@@ -1,5 +1,6 @@
 {
   "name": "node-warrior",
+  "private": true,
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
@@ -17,7 +18,6 @@
   },
   "dependencies": {
     "aabb-3d": "0.0.0",
-    "duplex-emitter": "0.1.10",
     "ecstatic": "0.3.0",
     "extend": "1.2.1",
     "hat": "0.0.3",
@@ -28,13 +28,12 @@
     "painterly-textures": "0.0.3",
     "spatial-trigger": "0.0.0",
     "toolbar": "git://github.com/kumavis/toolbar.git",
-    "voxel-client": "1.0.4",
+    "voxel-server": "2.1.0",
+    "voxel-client": "2.0.0",
     "voxel-highlight": "0.0.9",
     "voxel-level": "2.1.0",
     "voxel-rescue": "git://github.com/flyswatter/voxel-rescue.git",
-    "voxel-server": "1.0.4",
     "voxel": "0.3.1",
-    "walkietalkie": "2.0.0",
     "websocket-stream": "0.0.5",
     "ws": "0.4.30",
     "level-user": "1.2.0",
@@ -42,7 +41,7 @@
     "rtc-quickconnect": "0.7.1",
     "rtc-data-stream": "0.0.1",
     "peerjs": "git://github.com/kumavis/peerjs.git",
-    "browser-module-sandbox": "~1.3.0"
+    "browser-module-sandbox": "1.3.0"
   },
   "devDependencies": {
     "brfs": "0.0.8",

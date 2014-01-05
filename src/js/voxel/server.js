@@ -61,7 +61,7 @@ Server.prototype.initialize = function(opts) {
       'bluewool',
     ],
     avatarInitialPosition: [2, 20, 2],
-    forwardEvents: ['chat','spatialTrigger'],
+    forwardEvents: ['spatialTrigger'],
   }
   var settings = self.settings = extend({}, defaults, opts)
 

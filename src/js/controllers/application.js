@@ -1,10 +1,8 @@
 // external dependencies
-var Websocket = require('websocket-stream')
-var DuplexEmitter = require('duplex-emitter')
+var WebsocketStream = require('websocket-stream')
 var LevelUser = require('level-user')
 var VoxelLevel = require('voxel-level')
 var Uuid = require('hat')
-var WalkieTalkieChannel = require('walkietalkie')
 var concat = require('concat-stream')
 // local dependencies
 var Client = require('../voxel/client.js')
@@ -25,12 +23,9 @@ App.ApplicationController = Em.Controller.extend({
     var existingHostId = self.get('rtcConnectionHash')
     // Self Hosted, if the target id is the current id
     if (targetHostId === existingHostId) {
-      // DIABLED b/c side-by-side perf is so bad
-        // var localNetwork = WalkieTalkieChannel()
-        // var serverConnection = localNetwork.WalkieTalkie()
-        // var clientConnection = localNetwork.WalkieTalkie()
-        // self.connectClientToServer(serverConnection,clientConnection)
-      // instead open a new window, after url change
+      // intiate shared-tab side-by-side conncetion here
+      // temporarily DIABLED b/c side-by-side perf is so bad
+      // instead ask user to open a new window, after url change
       Em.run.next(function(){
         var gameLink = document.getElementById('gameContainer')
         gameLink.innerText = 'Temporary: This is the server only. Open current URL in new window to join.'
@@ -46,12 +41,11 @@ App.ApplicationController = Em.Controller.extend({
     var self = this
     // setup connection with server
     var remoteServer = 'ws://'+document.domain+':8000/'
-    var socket = Websocket(remoteServer)
-    socket.on('end', function() { console.log('disconnected from server :(') })
-    socket.on('error', function(err) { console.log(err) })
-    var connection = DuplexEmitter(socket)
+    var duplexStream = WebsocketStream(remoteServer)
+    duplexStream.on('end', function() { console.log('disconnected from server :(') })
+    duplexStream.on('error', function(err) { console.log(err) })
     // connect to server
-    self.connectClientToServer(connection)
+    self.connectClientToServer(duplexStream)
   },
 
   // start a game server hosting the given world
@@ -113,16 +107,17 @@ App.ApplicationController = Em.Controller.extend({
   rtcConnection: null,
 
   // used for connecting locally, or to the lobby
-  connectClientToServer: function connectClientToServer(clientConnection,serverConnection) {
+  connectClientToServer: function connectClientToServer(clientDuplexStream,serverDuplexStream) {
     var self = this
     // create the client
     Em.run.next(function(){
       var client = new Client({
-        connection: clientConnection,
+        serverStream: clientDuplexStream,
         container: document.querySelector('#container'),
       })
       self.set('client',client)
-      if (serverConnection) self.get('server').connectClient(serverConnection)
+      // for shared-tab side-by-side connections
+      if (serverDuplexStream) self.get('server').connectClient(serverDuplexStream)
     })
   },
 

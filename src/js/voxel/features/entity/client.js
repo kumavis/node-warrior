@@ -125,8 +125,8 @@ module.exports = function(client) {
     client.entities[uuid] = newEntity
     client.npcs[uuid] = npc
     // position npc
-    var pos = npc.pos = npcData.pos
-    var rot = npc.rot = npcData.rot
+    var pos = npc.pos = npcData.pos || [0,0,0]
+    var rot = npc.rot = npcData.rot || [0,0,0]
     npcMesh.position.set(pos[0], pos[1], pos[2])
     // if starting in error state, repaint npc as error
     if (npcData.state === 'error') _entityEnteredErrorState(newEntity)
