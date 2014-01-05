@@ -72,7 +72,7 @@ Server.prototype.initialize = function(opts) {
 
   // enable event forwarding for features
   settings.forwardEvents.push('modvox')
-  settings.forwardEvents.push('npc')
+  settings.forwardEvents.push('entity')
 
   // create and initialize base game server
   var baseServer = self.baseServer = voxelServer(settings)

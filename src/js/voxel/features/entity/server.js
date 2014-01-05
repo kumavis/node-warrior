@@ -137,7 +137,12 @@ module.exports = function(server) {
       if (-1 === code.indexOf('require(')) code = 'require("os")\n\n'+code
       // activate entity when bundle is ready
       sandbox.once('bundleEnd',function(){
-        setEntityState(entity,'active')
+        // iframe not ready to capture messages yet?
+        setTimeout(function(){
+          var message = {name:'initialize',uuid:uuid}
+          sandbox.iframe.iframe.contentWindow.postMessage(JSON.stringify(message),'*')
+          setEntityState(entity,'active')
+        },1000)
       })
       // start sandbox
       // TODO: delay here b/c db not ready(?)
@@ -172,7 +177,8 @@ module.exports = function(server) {
   // run code an entity function
   function triggerEntityUpdate(entity) {
     var sandbox = entitySandboxes[entity.uuid]
-    sandbox.iframe.iframe.contentWindow.postMessage('update:'+entity.uuid,'*')
+    var message = {name:'update', uuid:entity.uuid}
+    sandbox.iframe.iframe.contentWindow.postMessage(JSON.stringify(message),'*')
   }
 
   // entity API
