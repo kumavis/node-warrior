@@ -29,7 +29,7 @@
     "spatial-trigger": "0.0.0",
     "toolbar": "git://github.com/kumavis/toolbar.git",
     "voxel-server": "2.1.0",
-    "voxel-client": "2.0.0",
+    "voxel-client": "2.1.0",
     "voxel-highlight": "0.0.9",
     "voxel-level": "2.1.0",
     "voxel-rescue": "git://github.com/flyswatter/voxel-rescue.git",
