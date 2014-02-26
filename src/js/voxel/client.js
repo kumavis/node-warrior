@@ -13,7 +13,7 @@ var playerTools = require('./defaultTools.js')
 // internal features
 var modvox = require('./features/modvox/client.js')
 var entity = require('./features/entity/client.js')
-// some extra modules exposed for the gun
+// some extra modules exposed for the codegun
 require('minecraft-skin')
 var trigger = require('spatial-trigger')
 var aabb = require('aabb-3d')
@@ -46,10 +46,6 @@ Client.prototype.initialize = function(opts) {
   self.connection = self.baseClient.connection
   self.bindServerEvents()
   self.bindClientEvents()
-
-  // add features
-  self.modvox = modvox(self)
-  self.entity = entity(self)
 }
 
 Client.prototype.bindServerEvents = function() {
@@ -136,6 +132,10 @@ Client.prototype.setup = function() {
     var message = user + ' left.'
     self.chat.showMessage(message)
   })
+
+  // add features
+  self.modvox = modvox(self)
+  self.entity = entity(self)
 
   // initialize code editor
   self.codeEditor = codeEditor.initialize(game)

@@ -11,10 +11,11 @@ var toolSources = {
   house: fs.readFileSync(__dirname + '/tools/house.js'),
   teleport: fs.readFileSync(__dirname + '/tools/teleport.js'),
   npc: fs.readFileSync(__dirname + '/tools/npc.js'),
+  grow: fs.readFileSync(__dirname + '/tools/grow.js'),
 }
 
 // convert source files to tool objects
-var defaultTools = module.exports = Object.keys(toolSources).map(function(toolName) {
+var defaultTools = Object.keys(toolSources).map(function(toolName) {
   return createTool(toolName,toolSources[toolName].toString())
 })
 
@@ -22,6 +23,8 @@ var defaultTools = module.exports = Object.keys(toolSources).map(function(toolNa
 while (defaultTools.length<10) {
   defaultTools.push(createEmptyTool())
 }
+
+module.exports = defaultTools
 
 function createTool(name, code) {
   return {

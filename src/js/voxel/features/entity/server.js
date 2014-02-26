@@ -39,9 +39,6 @@ module.exports = function(server) {
   // awaken entities
   startAnimation()
 
-  // debug !! debug
-  window.handleEntityUpdate = handleEntityUpdate
-
   function bindEvents() {
     // set npc
     server.baseServer.on('entity',handleEntityUpdate)

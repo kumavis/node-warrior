@@ -36,17 +36,17 @@ App.ApplicationController = Em.Controller.extend({
     }
   },
 
-  // join the lobby server
-  joinLobby: function joinLobby() {
-    var self = this
-    // setup connection with server
-    var remoteServer = 'ws://'+document.domain+':8000/'
-    var duplexStream = WebsocketStream(remoteServer)
-    duplexStream.on('end', function() { console.log('disconnected from server :(') })
-    duplexStream.on('error', function(err) { console.log(err) })
-    // connect to server
-    self.connectClientToServer(duplexStream)
-  },
+  // // join the lobby server
+  // joinLobby: function joinLobby() {
+  //   var self = this
+  //   // setup connection with server
+  //   var remoteServer = 'ws://'+document.domain+':8000/'
+  //   var duplexStream = WebsocketStream(remoteServer)
+  //   duplexStream.on('end', function() { console.log('disconnected from server :(') })
+  //   duplexStream.on('error', function(err) { console.log(err) })
+  //   // connect to server
+  //   self.connectClientToServer(duplexStream)
+  // },
 
   // start a game server hosting the given world
   startGameServer: function startGameServer(world,callback) {
@@ -63,6 +63,8 @@ App.ApplicationController = Em.Controller.extend({
       var hostId = self.setupRtcHost()
       self.set('rtcConnectionHash',hostId)
       callback(hostId)
+      // join local server
+      // self.connectToRtcHost(hostId)
     })
   },
 
@@ -106,10 +108,11 @@ App.ApplicationController = Em.Controller.extend({
   // the local rtcConnection, if any
   rtcConnection: null,
 
-  // used for connecting locally, or to the lobby
+  // used for connecting to a server (remote or local)
   connectClientToServer: function connectClientToServer(clientDuplexStream,serverDuplexStream) {
     var self = this
-    // create the client
+    
+    // create the client after DOM updated
     Em.run.next(function(){
       var client = new Client({
         serverStream: clientDuplexStream,
@@ -125,6 +128,7 @@ App.ApplicationController = Em.Controller.extend({
     var self = this
     var hostId = Uuid()
     var host = RtcUtil.RtcConnection(hostId)
+    var server = self.get('server')
     // when a client has connected
     host.on('connectionEstablished',server.connectClient.bind(server))
     // remove client on disconnect
@@ -135,6 +139,7 @@ App.ApplicationController = Em.Controller.extend({
   connectToRtcHost: function connectToRtcHost(hostId) {
     var self = this
     var host = RtcUtil.connectToHost(hostId)
+    var server = self.get('server')
     host.on('connectionEstablished',self.connectClientToServer.bind(self))
     host.on('connectionLost',function(){
       console.error("connection lost")

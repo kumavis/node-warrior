@@ -20,16 +20,16 @@ function Server(opts) {
 // Public
 //
 
-Server.prototype.connectClient = function(connection) {
+Server.prototype.connectClient = function(duplexStream) {
   var self = this
-  self.baseServer.connectClient(connection)
-  console.log(connection.id, 'joined')
+  self.baseServer.connectClient(duplexStream)
+  console.log(duplexStream.id, 'joined')
 }
 
-Server.prototype.removeClient = function(connection) {
+Server.prototype.removeClient = function(duplexStream) {
   var self = this
-  self.baseServer.removeClient(connection)
-  console.log(connection.id, 'left')
+  self.baseServer.removeClient(duplexStream)
+  console.log(duplexStream.id, 'left')
 }
 
 //
@@ -141,7 +141,7 @@ Server.prototype.bindEvents = function() {
     var cs = game.chunkSize
       , dimensions = [cs, cs, cs]
     self.voxelDb.load(settings.worldId, position, dimensions, function(err, chunk) {
-      if (err) return console.error('chunk load error', err.stack)
+      if (err) return console.error(err.stack)
       var chunk = {
         position: position,
         voxels: new Uint8Array(chunk.voxels.buffer),
