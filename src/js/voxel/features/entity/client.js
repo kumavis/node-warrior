@@ -22,30 +22,24 @@ module.exports = function(client) {
     }
   })
 
-  // register for events when game is ready
-  client.baseClient.on('loadComplete', function() {
-
-    // on game loop, animate entity position and rotation
-    client.game.on('tick', function(delta) {
-      var THREE = client.game.THREE
-      var lerpPercent = Math.min(delta/100,1)
-      var npcUuids = Object.keys(client.npcs)
-      npcUuids.map(function(uuid) {
-        var npc = client.npcs[uuid]
-        var object3D = npc.mesh
-        var pos = new THREE.Vector3(npc.pos[0],npc.pos[1],npc.pos[2])
-        var rot = new THREE.Vector3(npc.rot[0],npc.rot[1],npc.rot[2])
-        // lerp position
-        object3D.position.lerp(pos, lerpPercent)
-        // lerp rotation
-        var targetBodyRot = rot.clone().add(new THREE.Vector3(0,Math.PI/2,0))
-        object3D.children[0].rotation.y = object3D.children[0].rotation.clone().lerp(targetBodyRot, lerpPercent).y
-        var targetHeadRot = npc.head.rotation.clone().setZ(scale(rot.x, -1.5, 1.5, -0.75, 0.75))
-        npc.head.rotation.z = npc.head.rotation.clone().lerp(targetHeadRot, lerpPercent).z
-      })
-
+  // on game loop, animate entity position and rotation
+  client.game.on('tick', function(delta) {
+    var THREE = client.game.THREE
+    var lerpPercent = Math.min(delta/100,1)
+    var npcUuids = Object.keys(client.npcs)
+    npcUuids.map(function(uuid) {
+      var npc = client.npcs[uuid]
+      var object3D = npc.mesh
+      var pos = new THREE.Vector3(npc.pos[0],npc.pos[1],npc.pos[2])
+      var rot = new THREE.Vector3(npc.rot[0],npc.rot[1],npc.rot[2])
+      // lerp position
+      object3D.position.lerp(pos, lerpPercent)
+      // lerp rotation
+      var targetBodyRot = rot.clone().add(new THREE.Vector3(0,Math.PI/2,0))
+      object3D.children[0].rotation.y = object3D.children[0].rotation.clone().lerp(targetBodyRot, lerpPercent).y
+      var targetHeadRot = npc.head.rotation.clone().setZ(scale(rot.x, -1.5, 1.5, -0.75, 0.75))
+      npc.head.rotation.z = npc.head.rotation.clone().lerp(targetHeadRot, lerpPercent).z
     })
-
   })
 
   // expose api for consumer
