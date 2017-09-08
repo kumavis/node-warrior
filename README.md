@@ -1,4 +1,6 @@
 # Node-Warrior
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/kumavis/node-warrior.svg)](https://greenkeeper.io/)
 A 3D multiplayer voxel game with a code gun!
 It's a gun that shoots code you wrote into the world!
 
