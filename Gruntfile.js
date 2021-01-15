@@ -98,22 +98,22 @@ module.exports = function(grunt) {
       },
     },
 
-    // Css
-    sass: {
-      build: {
-        options: {
-          style: 'expanded',
-          quiet: true,
-          cacheLocation: '<%= meta.tmp %>/cache',
-          loadPath: [
-            '<%= meta.src.css %>',
-          ],
-        },
-        files: {
-          '<%= meta.build.css %>/app.css': '<%= meta.src.css %>/app.scss'
-        }
-      }
-    },
+    // // Css
+    // sass: {
+    //   build: {
+    //     options: {
+    //       style: 'expanded',
+    //       quiet: true,
+    //       cacheLocation: '<%= meta.tmp %>/cache',
+    //       loadPath: [
+    //         '<%= meta.src.css %>',
+    //       ],
+    //     },
+    //     files: {
+    //       '<%= meta.build.css %>/app.css': '<%= meta.src.css %>/app.scss'
+    //     }
+    //   }
+    // },
 
     // Html
     ejs: {
@@ -129,16 +129,16 @@ module.exports = function(grunt) {
     },
 
     // Ember templates
-    emberTemplates: {
-      compile: {
-        options: {
-          templateName: function(sourceFile) { return sourceFile.replace(/src\/templates\//, '') }
-        },
-        files: {
-          '<%= meta.build.templates %>': '<%= meta.src.templates %>/**/*.hbs'
-        }
-      }
-    },
+    // emberTemplates: {
+    //   compile: {
+    //     options: {
+    //       templateName: function(sourceFile) { return sourceFile.replace(/src\/templates\//, '') }
+    //     },
+    //     files: {
+    //       '<%= meta.build.templates %>': '<%= meta.src.templates %>/**/*.hbs'
+    //     }
+    //   }
+    // },
 
     //
     // Utility
@@ -202,17 +202,17 @@ module.exports = function(grunt) {
           livereload: true
         },
       },
-      templates: {
-        files: ['<%= meta.src.templates %>/**/*.hbs'],
-        tasks: ['lock', 'emberTemplates', 'unlock']
-      },
-      styles: {
-        files: ['<%= meta.src.css %>/**/*.scss','<%= meta.src.css %>/**/*.css'],
-        tasks: ['lock', 'sass:build', 'unlock'],
-        options: {
-          livereload: true
-        },
-      },
+      // templates: {
+      //   files: ['<%= meta.src.templates %>/**/*.hbs'],
+      //   tasks: ['lock', 'emberTemplates', 'unlock']
+      // },
+      // styles: {
+      //   files: ['<%= meta.src.css %>/**/*.scss','<%= meta.src.css %>/**/*.css'],
+      //   tasks: ['lock', 'sass:build', 'unlock'],
+      //   options: {
+      //     livereload: true
+      //   },
+      // },
     },
 
     // minify build files
@@ -250,9 +250,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-config')
 
   // Build
-  grunt.loadNpmTasks('grunt-ember-templates')
+  // grunt.loadNpmTasks('grunt-ember-templates')
   grunt.loadNpmTasks('grunt-browserify')
-  grunt.loadNpmTasks('grunt-sass')
+  // grunt.loadNpmTasks('grunt-sass')
   grunt.loadNpmTasks('grunt-ejs')
 
   // Asset Server
@@ -279,12 +279,11 @@ module.exports = function(grunt) {
   grunt.registerTask('prod', ['build:prod', 'servers','keepalive'])
 
   // Build
-  grunt.registerTask('build:dev', ['clean', 'build:html', 'build:templates', 'build:img', 'build:css', 'build:dev:js'])
-  grunt.registerTask('build:prod', ['clean', 'build:html', 'build:templates', 'build:img', 'build:css', 'build:prod:js'])
+  grunt.registerTask('build:dev', ['clean', 'build:html', 'build:img', 'build:css', 'build:dev:js'])
+  grunt.registerTask('build:prod', ['clean', 'build:html', 'build:img', 'build:css', 'build:prod:js'])
   grunt.registerTask('build:html', ['ejs'])
-  grunt.registerTask('build:templates', ['emberTemplates'])
   grunt.registerTask('build:img', ['copy:icons','copy:blocks','copy:avatars'])
-  grunt.registerTask('build:css', ['copy:libcss','sass:build'])
+  grunt.registerTask('build:css', ['copy:libcss'])
   grunt.registerTask('build:dev:js', ['browserify:dev_lib','browserify:dev_app'])
   grunt.registerTask('build:prod:js', ['browserify:prod_lib','browserify:prod_app','uglify:prod'])
   

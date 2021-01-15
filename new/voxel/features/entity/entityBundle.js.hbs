@@ -1,0 +1,63 @@
+// setup message passing
+var uuid = "{{uuid}}"
+var server = undefined
+
+// listen for update message
+self.addEventListener("message",messageListener,false)
+
+// run the update function inside a error catcher
+function messageListener(event) {
+  try {
+    // parse message - if unable to parse, ignore
+    var message
+    try {
+      message = JSON.parse(event.data)
+    } catch(err) {
+      return
+    }
+    // capture the server reference on the initialize event
+    if (message.name === 'initialize' && message.uuid === uuid) return server = event.source
+    // if we dont have a server reference yet, ignore
+    if (!server) return
+    // if this is not an update message, ignore
+    if (message.name !== 'update') return
+    // if this message is not for this entity, ignore
+    if (message.uuid !== uuid) return
+    // run the update
+    entityUpdate()
+  } catch(err) {
+    // report the error
+    sendError(err)
+  }
+}
+
+// go into error state
+function sendError(err) {
+  var response = {name:"entityMessage",uuid:uuid,type:"error",value:(err.stack || err)}
+  server.postMessage(JSON.stringify(response),"*")
+}
+
+// entity api
+function setPosition(arrayVector) {
+  var response = {name:"entityMessage",uuid:uuid,type:"setPosition",value:arrayVector}
+  server.postMessage(JSON.stringify(response),"*")
+}
+function setRotation(arrayVector) {
+  var response = {name:"entityMessage",uuid:uuid,type:"setRotation",value:arrayVector}
+  server.postMessage(JSON.stringify(response),"*")
+}
+function move(arrayVector) {
+  var response = {name:"entityMessage",uuid:uuid,type:"move",value:arrayVector}
+  server.postMessage(JSON.stringify(response),"*")
+}
+function rotate(arrayVector) {
+  var response = {name:"entityMessage",uuid:uuid,type:"rotate",value:arrayVector}
+  server.postMessage(JSON.stringify(response),"*")
+}
+
+// user-provided update function
+function entityUpdate() {
+  // start user code
+  {{user_code}}
+  // end user code
+}
